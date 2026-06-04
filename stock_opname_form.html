@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Opname Perangkat — MTI</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;color:#2C2C2A;min-height:100vh;padding-bottom:48px}
+
+/* TOPBAR */
+.topbar{background:#fff;border-bottom:0.5px solid #e0e0da;padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:#2C2C2A}
+.logo{width:28px;height:28px;background:#1D9E75;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.top-badge{font-size:10px;background:#E1F5EE;color:#085041;padding:2px 9px;border-radius:20px;font-weight:700}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;padding:12px 20px;background:#fff;border-bottom:0.5px solid #e0e0da;overflow-x:auto;gap:0;position:sticky;top:52px;z-index:49}
+.si{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.sn{width:22px;height:22px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#888;transition:all .2s}
+.sn.done{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.sn.active{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.sl{font-size:11px;color:#888;white-space:nowrap}
+.sl.active{color:#2C2C2A;font-weight:600}
+.sd{width:24px;height:1px;background:#e0e0da;margin:0 6px;flex-shrink:0}
+
+/* WRAP */
+.wrap{max-width:580px;margin:0 auto;padding:20px 16px}
+
+/* SECTION LABEL */
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#888;margin:20px 0 10px;display:flex;align-items:center;gap:6px}
+.sec-label:first-child{margin-top:0}
+.sec-line{flex:1;height:0.5px;background:#e0e0da}
+
+/* CARD */
+.card{background:#fff;border:0.5px solid #ddddd8;border-radius:12px;padding:18px;margin-bottom:12px}
+.ch{display:flex;align-items:center;gap:9px;margin-bottom:14px;padding-bottom:12px;border-bottom:0.5px solid #eeeee9}
+.ci{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ci.teal{background:#E1F5EE;color:#0F6E56}
+.ci.blue{background:#E6F1FB;color:#185FA5}
+.ci.amber{background:#FAEEDA;color:#854F0B}
+.ci.purple{background:#EEEDFE;color:#534AB7}
+.ci.green2{background:#EAF3DE;color:#3B6D11}
+.ct{font-size:14px;font-weight:600;color:#2C2C2A}
+.cs{font-size:11px;color:#888;margin-top:1px}
+
+/* FIELDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.g2{grid-template-columns:1fr}}
+.f{margin-bottom:12px}
+.f:last-child{margin-bottom:0}
+.f label{display:flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#888;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;flex-wrap:wrap}
+.req{color:#E24B4A;font-size:13px;line-height:1}
+.badge-auto{display:inline-flex;align-items:center;gap:2px;background:#E1F5EE;color:#085041;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;text-transform:none;letter-spacing:0}
+.f input,.f select,.f textarea{width:100%;padding:8px 11px;border:0.5px solid #ccc;border-radius:8px;font-size:13px;background:#fff;color:#2C2C2A;outline:none;font-family:inherit;transition:border .15s}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+.f input.err,.f select.err{border-color:#E24B4A;background:#FCEBEB}
+.f input[readonly]{background:#f5f5f3;color:#888;cursor:default}
+.f textarea{resize:vertical;min-height:72px}
+.em{font-size:11px;color:#E24B4A;margin-top:4px;display:none;align-items:center;gap:3px}
+.em.show{display:flex}
+.pw{display:flex;border:0.5px solid #ccc;border-radius:8px;overflow:hidden;transition:border .15s}
+.pw:focus-within{border-color:#1D9E75;box-shadow:0 0 0 3px rgba(29,158,117,.08)}
+.pw.err{border-color:#E24B4A;background:#FCEBEB}
+.pt{padding:0 11px;background:#f5f5f3;font-size:13px;font-weight:700;color:#888;display:flex;align-items:center;border-right:0.5px solid #e0e0da;white-space:nowrap}
+.pw input{border:none;border-radius:0;padding:8px 11px;flex:1;min-width:0;background:transparent;font-size:13px;color:#2C2C2A;outline:none;font-family:inherit}
+
+/* FRAUD ROWS */
+.fr{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid #eeeee9;font-size:12px}
+.fr:last-child{border-bottom:none;padding-bottom:0}
+.fl{display:flex;align-items:center;gap:7px;color:#888;font-size:11px}
+.fv{font-weight:600;font-size:11px}
+.fv.ok{color:#1D9E75}
+.fv.warn{color:#BA7517}
+.fv.muted{color:#888}
+
+/* GPS */
+.gps-idle{border:1px solid #e0e0da;background:#f5f5f3;border-radius:10px;padding:14px;margin-bottom:12px;display:flex;gap:10px}
+.gps-idle-ico{width:36px;height:36px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:16px;color:#1D9E75;flex-shrink:0}
+.gps-idle-title{font-size:12px;font-weight:600;color:#2C2C2A;margin-bottom:2px}
+.gps-idle-sub{font-size:11px;color:#888;line-height:1.5;margin-bottom:8px}
+.btn-allow{display:inline-flex;align-items:center;gap:5px;padding:7px 16px;background:#1D9E75;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-allow:hover{background:#0F6E56}
+.gbox{border-radius:10px;padding:12px 14px;margin-bottom:12px;display:flex;gap:9px}
+.gbox.loading{border:1px solid #B5D4F4;background:#E6F1FB}
+.gbox.ok{border:1px solid #9FE1CB;background:#E1F5EE}
+.gbox.warn{border:1px solid #FAC775;background:#FAEEDA}
+.gbox.err{border:1px solid #F5C4B3;background:#FAECE7}
+.gi{font-size:17px;flex-shrink:0;margin-top:1px}
+.gbox.loading .gi{color:#185FA5}
+.gbox.ok .gi{color:#1D9E75}
+.gbox.warn .gi{color:#BA7517}
+.gbox.err .gi{color:#993C1D}
+.gtitle{font-size:12px;font-weight:600;margin-bottom:2px}
+.gbox.loading .gtitle{color:#0C447C}
+.gbox.ok .gtitle{color:#085041}
+.gbox.warn .gtitle{color:#633806}
+.gbox.err .gtitle{color:#712B13}
+.gsub{font-size:11px;line-height:1.5}
+.gbox.loading .gsub{color:#185FA5}
+.gbox.ok .gsub{color:#1D9E75}
+.gbox.warn .gsub{color:#854F0B}
+.gbox.err .gsub{color:#993C1D}
+.gflag{display:inline-flex;align-items:center;gap:3px;background:#FAEEDA;color:#633806;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px}
+.btn-retry{padding:5px 12px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;margin-top:7px;display:inline-flex;align-items:center;gap:4px;font-family:inherit;background:#1D9E75;color:#fff}
+.btn-retry.amber{background:#EF9F27}
+
+/* DETECT PANEL */
+.dp{background:#f5f5f3;border:0.5px solid #e0e0da;border-radius:10px;padding:13px;margin-bottom:12px}
+.dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.dp-title{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:5px}
+.dp-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.dp-status.scanning{background:#E6F1FB;color:#185FA5}
+.dp-status.done{background:#E1F5EE;color:#085041}
+.dp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.di{background:#fff;border:0.5px solid #e0e0da;border-radius:7px;padding:8px 10px}
+.di-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#888;margin-bottom:3px}
+.di-val{font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;color:#2C2C2A}
+.di-val.loading{color:#888;font-weight:400}
+.lock-ic{font-size:9px;color:#1D9E75}
+.dp-note{font-size:10px;color:#888;margin-top:8px;display:flex;gap:5px;line-height:1.5}
+
+/* SN HELPER */
+.sn-help{background:#f5f5f3;border-radius:7px;padding:9px 11px;margin-top:5px;display:flex;gap:7px}
+.sn-help i{font-size:13px;color:#BA7517;flex-shrink:0;margin-top:1px}
+.sn-help p{font-size:11px;color:#888;line-height:1.5}
+.sn-help code{background:#fff;padding:1px 4px;border-radius:3px;font-family:monospace;font-size:10px;color:#2C2C2A}
+
+/* IMEI */
+.imei-bar{height:4px;border-radius:2px;background:#e0e0da;overflow:hidden;margin-top:5px}
+.imei-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0}
+.imei-hint{font-size:11px;margin-top:3px;color:#888}
+
+/* CONDITION BUTTONS */
+.divider{height:0.5px;background:#eeeee9;margin:14px 0}
+.cg{display:flex;gap:6px;flex-wrap:wrap}
+.cb{padding:6px 14px;border:0.5px solid #ccc;border-radius:20px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:#888;transition:all .15s;font-family:inherit}
+.cb:hover{border-color:#aaa}
+.cb.b.sel{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.cb.s.sel{background:#FAEEDA;border-color:#EF9F27;color:#633806}
+.cb.r.sel{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+.cg.shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* BATTERY */
+.bat-track{height:8px;border-radius:4px;background:#e0e0da;overflow:hidden;margin-top:6px}
+.bat-fill{height:100%;border-radius:4px;transition:width .3s,background .3s}
+
+/* PROGRESS */
+.prog-banner{background:#f5f5f3;border-radius:9px;padding:10px 13px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.pb-wrap{flex:1;height:5px;background:#e0e0da;border-radius:3px;overflow:hidden}
+.pb-fill{height:100%;background:#1D9E75;border-radius:3px;transition:width .4s}
+.pb-lbl{font-size:11px;font-weight:700;color:#888;white-space:nowrap}
+
+/* PHOTO */
+.guide-banner{background:#FAECE7;border:1px solid #F5C4B3;border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.guide-title{font-size:11px;font-weight:700;color:#712B13;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.guide-row{display:flex;gap:7px;font-size:11px;color:#993C1D;line-height:1.5;margin-bottom:3px}
+.guide-row:last-child{margin-bottom:0}
+.gnum{width:16px;height:16px;border-radius:50%;background:#F0997B;color:#4A1B0C;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.guide-row code{background:rgba(0,0,0,.08);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:10px}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.slot{border-radius:10px;padding:14px 11px;text-align:center;cursor:pointer;transition:all .2s;border:1.5px dashed #E24B4A;background:#FCEBEB}
+.slot.filled{border-style:solid;border-color:#1D9E75;background:#E1F5EE}
+.slot-icon{font-size:22px;display:block;margin-bottom:5px;color:#A32D2D;transition:color .2s}
+.slot.filled .slot-icon{color:#085041}
+.slot-title{font-size:11px;font-weight:700;color:#791F1F;transition:color .2s}
+.slot.filled .slot-title{color:#085041}
+.slot-sub{font-size:10px;color:#A32D2D;line-height:1.4;margin-top:2px}
+.slot.filled .slot-sub{color:#1D9E75}
+.slot-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:7px;margin-top:8px;display:none;border:0.5px solid rgba(0,0,0,.08)}
+.slot.filled .slot-thumb{display:block}
+.slot-ok{display:none;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:700;color:#085041;margin-top:5px}
+.slot.filled .slot-ok{display:flex}
+.extra-drop{border:1.5px dashed #ccc;border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:#f5f5f3;transition:all .15s}
+.extra-drop:hover{border-color:#1D9E75;background:#E1F5EE}
+.extra-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.extra-item{position:relative}
+.extra-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;display:block;border:0.5px solid #e0e0da}
+.extra-lbl{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+
+/* SUMMARY */
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid #eeeee9;font-size:12px}
+.sum-row:last-child{border-bottom:none;padding-bottom:0}
+.sum-lbl{color:#888;font-size:11px;flex-shrink:0}
+.sum-val{font-weight:600;font-size:12px;text-align:right;max-width:60%;word-break:break-word}
+.cpill{display:inline-flex;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.cpill.b{background:#E1F5EE;color:#085041}
+.cpill.s{background:#FAEEDA;color:#633806}
+.cpill.r{background:#FCEBEB;color:#791F1F}
+.gpill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700}
+.gpill.ok{background:#E1F5EE;color:#085041}
+.gpill.warn{background:#FAEEDA;color:#633806}
+
+/* DISCLAIMER */
+.disc{background:#FAEEDA;border:0.5px solid #EF9F27;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:11px;color:#633806;line-height:1.6;display:flex;gap:8px}
+
+/* NAV */
+.nav{display:flex;gap:10px;margin-top:4px}
+.btn-back{padding:11px 18px;border:0.5px solid #ccc;border-radius:10px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#888;font-family:inherit;transition:all .15s}
+.btn-back:hover{background:#f5f5f3}
+.btn-next{flex:1;padding:12px;background:#1D9E75;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:background .15s}
+.btn-next:hover{background:#0F6E56}
+.btn-next:active{transform:scale(.99)}
+.btn-next:disabled{background:#e0e0da;color:#888;cursor:not-allowed}
+
+/* SUCCESS */
+.success-card{background:#fff;border:0.5px solid #ddddd8;border-radius:12px;padding:32px 24px;text-align:center}
+.success-icon{width:56px;height:56px;background:#E1F5EE;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;color:#1D9E75}
+.success-card h2{font-size:18px;font-weight:600;margin-bottom:6px}
+.success-card p{font-size:13px;color:#888;line-height:1.6;margin-bottom:20px}
+.receipt{background:#f5f5f3;border-radius:9px;padding:13px 15px;text-align:left;margin-bottom:20px}
+.rr{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:0.5px solid #e0e0da;color:#888}
+.rr:last-child{border-bottom:none}
+.rr strong{color:#2C2C2A;font-weight:600}
+.btn-new{width:100%;max-width:200px;margin:0 auto;padding:11px;background:#1D9E75;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit}
+.btn-new:hover{background:#0F6E56}
+
+.sp{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
+.sp.dark{border-color:#e0e0da;border-top-color:#1D9E75}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo"><i class="ti ti-device-tablet"></i></div>
+    Stock Opname Perangkat
+  </div>
+  <span class="top-badge"><i class="ti ti-shield-check" style="font-size:9px;margin-right:2px"></i>MTI 2025</span>
+</div>
+
+<div class="stepper" id="stepper">
+  <div class="si"><div class="sn active" id="sn1">1</div><span class="sl active" id="sl1">Identitas</span></div>
+  <div class="sd"></div>
+  <div class="si"><div class="sn" id="sn2">2</div><span class="sl" id="sl2">Perangkat & kondisi</span></div>
+  <div class="sd"></div>
+  <div class="si"><div class="sn" id="sn3">3</div><span class="sl" id="sl3">Foto & kirim</span></div>
+</div>
+
+<!-- ═══════════════════════════ STEP 1 ═══════════════════════════ -->
+<div id="step1" class="wrap">
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci teal"><i class="ti ti-user"></i></div>
+      <div><div class="ct">Identitas pemegang aset</div><div class="cs">Isi data diri sebagai pemegang aset</div></div>
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Nama lengkap <span class="req">*</span></label>
+        <input type="text" id="f-nama" placeholder="Sesuai ID karyawan" autocomplete="name">
+        <div class="em" id="em-nama"><i class="ti ti-alert-circle"></i>Wajib diisi</div>
+      </div>
+      <div class="f">
+        <label>ID Karyawan <span class="req">*</span></label>
+        <div class="pw" id="pw-eid">
+          <span class="pt">MTI-</span>
+          <input type="text" id="f-eid" placeholder="001234" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')">
+        </div>
+        <div class="em" id="em-eid"><i class="ti ti-alert-circle"></i>Wajib diisi, angka saja</div>
+      </div>
+    </div>
+    <div class="f">
+      <label>Regional <span class="req">*</span></label>
+      <select id="f-reg">
+        <option value="">-- Pilih regional --</option>
+        <option value="Metro">Metro</option>
+        <option value="Jabar - Banten">Jabar - Banten</option>
+        <option value="Jawa - Bali">Jawa - Bali</option>
+        <option value="Sumatera">Sumatera</option>
+        <option value="Kalsulpap">Kalsulpap</option>
+        <option value="Telesales">Telesales</option>
+        <option value="Telesales Malang">Telesales Malang</option>
+      </select>
+      <div class="em" id="em-reg"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci purple"><i class="ti ti-shield-check"></i></div>
+      <div><div class="ct">Verifikasi sesi</div><div class="cs">Data teknis dikumpulkan otomatis oleh sistem</div></div>
+    </div>
+    <div class="fr"><div class="fl"><i class="ti ti-fingerprint"></i>Device fingerprint</div><span class="fv ok" id="fp-v"><span class="sp dark"></span></span></div>
+    <div class="fr"><div class="fl"><i class="ti ti-clock"></i>Waktu laporan</div><span class="fv ok" id="ts-v"></span></div>
+    <div class="fr"><div class="fl"><i class="ti ti-wifi"></i>Tipe koneksi</div><span class="fv ok" id="net-v"></span></div>
+    <div class="fr" style="border:none"><div class="fl"><i class="ti ti-map-pin"></i>Lokasi GPS</div><span class="fv muted" id="gps-badge">Belum diakses</span></div>
+  </div>
+
+  <div id="gps-area">
+    <div class="gps-idle">
+      <div class="gps-idle-ico"><i class="ti ti-map-pin"></i></div>
+      <div>
+        <div class="gps-idle-title">Izinkan akses lokasi</div>
+        <div class="gps-idle-sub">Digunakan untuk memverifikasi bahwa laporan dibuat dari wilayah kerja yang sesuai. Lokasi tidak dibagikan ke pihak lain. Jika ditolak, laporan tetap dapat dikirim dan akan ditandai untuk verifikasi manual oleh admin.</div>
+        <button class="btn-allow" onclick="startGPS()"><i class="ti ti-map-pin"></i>Izinkan akses lokasi</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-next" onclick="goStep(2)"><i class="ti ti-arrow-right"></i>Lanjut ke perangkat &amp; kondisi</button>
+</div>
+
+<!-- ═══════════════════════════ STEP 2 ═══════════════════════════ -->
+<div id="step2" class="wrap" style="display:none">
+
+  <div class="sec-label"><span>Data perangkat</span><div class="sec-line"></div></div>
+
+  <div class="dp">
+    <div class="dp-head">
+      <span class="dp-title"><i class="ti ti-radar" style="font-size:11px"></i>Deteksi otomatis</span>
+      <span class="dp-status scanning" id="dp-status"><span class="sp dark"></span> Mendeteksi...</span>
+    </div>
+    <div class="dp-grid">
+      <div class="di"><div class="di-lbl">Sistem operasi</div><div class="di-val loading" id="d-os"><span class="sp dark"></span></div></div>
+      <div class="di"><div class="di-lbl">Tipe perangkat</div><div class="di-val loading" id="d-type"><span class="sp dark"></span></div></div>
+      <div class="di"><div class="di-lbl">CPU cores</div><div class="di-val loading" id="d-cpu"><span class="sp dark"></span></div></div>
+      <div class="di"><div class="di-lbl">RAM estimasi</div><div class="di-val loading" id="d-ram"><span class="sp dark"></span></div></div>
+      <div class="di"><div class="di-lbl">Resolusi layar</div><div class="di-val loading" id="d-res"><span class="sp dark"></span></div></div>
+      <div class="di"><div class="di-lbl">Touch input</div><div class="di-val loading" id="d-touch"><span class="sp dark"></span></div></div>
+    </div>
+    <div class="dp-note"><i class="ti ti-lock" style="font-size:10px;color:#1D9E75;flex-shrink:0;margin-top:1px"></i><span>Data ini dikumpulkan otomatis dan <strong>tidak dapat diubah</strong> oleh pengguna.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci blue"><i class="ti ti-devices"></i></div>
+      <div><div class="ct">Identitas perangkat</div><div class="cs">Lengkapi informasi yang tidak terdeteksi otomatis</div></div>
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Jenis perangkat <span class="badge-auto"><i class="ti ti-lock" style="font-size:8px"></i>auto</span></label>
+        <input type="text" id="f-dtype" readonly placeholder="Mendeteksi...">
+      </div>
+      <div class="f">
+        <label>Sistem operasi <span class="badge-auto"><i class="ti ti-lock" style="font-size:8px"></i>auto</span></label>
+        <input type="text" id="f-os" readonly placeholder="Mendeteksi...">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Merek <span class="req">*</span></label>
+        <input type="text" id="f-brand" placeholder="Samsung, Lenovo, ASUS...">
+        <div class="em" id="em-brand"><i class="ti ti-alert-circle"></i>Wajib diisi</div>
+      </div>
+      <div class="f">
+        <label>Model <span class="req">*</span></label>
+        <input type="text" id="f-model" placeholder="Galaxy Tab A8, VivoBook...">
+        <div class="em" id="em-model"><i class="ti ti-alert-circle"></i>Wajib diisi</div>
+      </div>
+    </div>
+    <div class="f">
+      <label>Serial Number <span class="req">*</span></label>
+      <input type="text" id="f-sn" placeholder="Cek di label belakang atau menu Tentang Perangkat">
+      <div class="em" id="em-sn"><i class="ti ti-alert-circle"></i>Wajib diisi</div>
+      <div class="sn-help"><i class="ti ti-bulb"></i><p id="sn-hint">Android: Pengaturan › Tentang perangkat › Status › Serial number &nbsp;|&nbsp; Windows: buka CMD → <code>wmic bios get serialnumber</code></p></div>
+    </div>
+    <div class="f">
+      <label>IMEI <span class="req">*</span></label>
+      <input type="text" id="f-imei" placeholder="15 digit angka — tekan *#06# untuk melihat IMEI" inputmode="numeric" maxlength="15" oninput="this.value=this.value.replace(/\D/g,'');onIMEI()">
+      <div class="imei-bar"><div class="imei-fill" id="imei-fill"></div></div>
+      <div class="imei-hint" id="imei-hint">Masukkan 15 digit angka</div>
+      <div class="em" id="em-imei"><i class="ti ti-alert-circle"></i>IMEI wajib diisi — 15 digit angka</div>
+    </div>
+  </div>
+
+  <div class="sec-label" style="margin-top:20px"><span>Kondisi fisik</span><div class="sec-line"></div></div>
+
+  <div class="prog-banner">
+    <i class="ti ti-clipboard-check" style="font-size:15px;color:#1D9E75;flex-shrink:0"></i>
+    <div class="pb-wrap"><div class="pb-fill" id="pb" style="width:0%"></div></div>
+    <span class="pb-lbl" id="pb-lbl">0 / 6 dipilih</span>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci amber"><i class="ti ti-scan"></i></div>
+      <div><div class="ct">Kondisi fisik perangkat</div><div class="cs">Semua field wajib dipilih salah satu</div></div>
+    </div>
+
+    <div class="f" id="f-layar">
+      <label>Layar / display <span class="req">*</span></label>
+      <div class="cg" id="cg-layar">
+        <button class="cb b" onclick="sel(this,'layar','b')">Baik / mulus</button>
+        <button class="cb s" onclick="sel(this,'layar','s')">Retak ringan</button>
+        <button class="cb r" onclick="sel(this,'layar','r')">Pecah / mati</button>
+      </div>
+      <div class="em" id="em-layar"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+    <div class="divider"></div>
+    <div class="f" id="f-ts">
+      <label>Touchscreen <span class="req">*</span></label>
+      <div class="cg" id="cg-ts">
+        <button class="cb b" onclick="sel(this,'ts','b')">Responsif</button>
+        <button class="cb s" onclick="sel(this,'ts','s')">Kurang responsif</button>
+        <button class="cb r" onclick="sel(this,'ts','r')">Tidak berfungsi</button>
+      </div>
+      <div class="em" id="em-ts"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+    <div class="divider"></div>
+    <div class="f" id="f-casing">
+      <label>Casing / body <span class="req">*</span></label>
+      <div class="cg" id="cg-casing">
+        <button class="cb b" onclick="sel(this,'casing','b')">Mulus</button>
+        <button class="cb s" onclick="sel(this,'casing','s')">Lecet / penyok</button>
+        <button class="cb r" onclick="sel(this,'casing','r')">Rusak parah</button>
+      </div>
+      <div class="em" id="em-casing"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+    <div class="divider"></div>
+    <div class="f" id="f-port">
+      <label>Port / konektor <span class="req">*</span></label>
+      <div class="cg" id="cg-port">
+        <button class="cb b" onclick="sel(this,'port','b')">Normal</button>
+        <button class="cb s" onclick="sel(this,'port','s')">Longgar</button>
+        <button class="cb r" onclick="sel(this,'port','r')">Rusak / tidak berfungsi</button>
+      </div>
+      <div class="em" id="em-port"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+    <div class="divider"></div>
+    <div class="f" id="f-btn">
+      <label>Tombol fisik <span class="req">*</span></label>
+      <div class="cg" id="cg-btn">
+        <button class="cb b" onclick="sel(this,'btn','b')">Semua normal</button>
+        <button class="cb s" onclick="sel(this,'btn','s')">Ada yang macet</button>
+        <button class="cb r" onclick="sel(this,'btn','r')">Tidak berfungsi</button>
+      </div>
+      <div class="em" id="em-btn"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci teal"><i class="ti ti-battery-charging"></i></div>
+      <div><div class="ct">Kondisi baterai</div><div class="cs">Cek di Pengaturan › Baterai › Kondisi Baterai</div></div>
+    </div>
+    <div class="f">
+      <label>Persentase kesehatan baterai (%)</label>
+      <div style="display:flex;align-items:center;gap:12px">
+        <input type="range" id="bat-range" min="0" max="100" value="80" step="1" oninput="updBat(this.value)" style="flex:1">
+        <span style="font-size:14px;font-weight:700;min-width:38px;text-align:right" id="bat-pct">80%</span>
+      </div>
+      <div class="bat-track"><div class="bat-fill" id="bat-fill" style="width:80%;background:#1D9E75"></div></div>
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span style="font-size:9px;color:#888">0%</span>
+        <span style="font-size:9px;color:#888">100%</span>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="f" id="f-bat">
+      <label>Gejala baterai <span class="req">*</span></label>
+      <div class="cg" id="cg-bat">
+        <button class="cb b" onclick="sel(this,'bat','b')">Normal</button>
+        <button class="cb s" onclick="sel(this,'bat','s')">Cepat habis</button>
+        <button class="cb r" onclick="sel(this,'bat','r')">Bocor / kembung</button>
+      </div>
+      <div class="em" id="em-bat"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+    <div class="divider"></div>
+    <div class="f">
+      <label>Catatan tambahan</label>
+      <textarea id="f-cat" placeholder="Jelaskan keluhan secara detail — kapan mulai, seberapa sering, kondisi saat terjadi, dll."></textarea>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goStep(1)"><i class="ti ti-arrow-left"></i> Kembali</button>
+    <button class="btn-next" onclick="goStep(3)"><i class="ti ti-arrow-right"></i>Lanjut foto &amp; kirim</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ STEP 3 ═══════════════════════════ -->
+<div id="step3" class="wrap" style="display:none">
+
+  <div class="sec-label"><span>Foto perangkat</span><div class="sec-line"></div></div>
+
+  <div class="guide-banner">
+    <div class="guide-title"><i class="ti ti-camera"></i>Panduan foto wajib</div>
+    <div class="guide-row"><div class="gnum">1</div><span>Foto layar yang menampilkan <strong>IMEI</strong> — tekan <code>*#06#</code> lalu foto layarnya</span></div>
+    <div class="guide-row"><div class="gnum">2</div><span>Foto label <strong>Serial Number</strong> di badan atau belakang perangkat</span></div>
+    <div class="guide-row"><div class="gnum">+</div><span>Foto kondisi fisik tambahan — depan, belakang, bagian yang rusak</span></div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci blue"><i class="ti ti-camera"></i></div>
+      <div><div class="ct">Upload foto</div><div class="cs">Foto IMEI dan Serial Number wajib diunggah</div></div>
+    </div>
+    <div class="slots">
+      <div class="slot" id="slot-imei" onclick="document.getElementById('ph-imei').click()">
+        <i class="ti ti-device-mobile slot-icon"></i>
+        <div class="slot-title">Foto IMEI</div>
+        <div class="slot-sub">Tekan *#06# lalu foto layar</div>
+        <img class="slot-thumb" id="thumb-imei" alt="foto imei">
+        <div class="slot-ok"><i class="ti ti-circle-check"></i>Terunggah</div>
+      </div>
+      <div class="slot" id="slot-sn" onclick="document.getElementById('ph-sn').click()">
+        <i class="ti ti-qrcode slot-icon"></i>
+        <div class="slot-title">Foto Serial Number</div>
+        <div class="slot-sub">Label di badan perangkat</div>
+        <img class="slot-thumb" id="thumb-sn" alt="foto serial number">
+        <div class="slot-ok"><i class="ti ti-circle-check"></i>Terunggah</div>
+      </div>
+    </div>
+    <div class="extra-drop" onclick="document.getElementById('ph-extra').click()">
+      <i class="ti ti-photo-up" style="font-size:20px;color:#888;display:block;margin-bottom:3px"></i>
+      <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:1px">Foto kondisi fisik tambahan</div>
+      <div style="font-size:11px;color:#aaa">Depan, belakang, bagian yang rusak — maks. 4 foto</div>
+    </div>
+    <input type="file" id="ph-imei" accept="image/*" style="display:none" onchange="loadSlot(this,'imei')">
+    <input type="file" id="ph-sn" accept="image/*" style="display:none" onchange="loadSlot(this,'sn')">
+    <input type="file" id="ph-extra" accept="image/*" multiple style="display:none" onchange="loadExtra(this)">
+    <div class="extra-strip" id="extra-strip"></div>
+    <div class="em" id="em-photo"><i class="ti ti-alert-circle"></i>Foto IMEI dan Serial Number wajib diunggah</div>
+  </div>
+
+  <div class="sec-label" style="margin-top:20px"><span>Ringkasan laporan</span><div class="sec-line"></div></div>
+
+  <div class="card">
+    <div class="ch">
+      <div class="ci green2"><i class="ti ti-list-check"></i></div>
+      <div><div class="ct">Periksa kembali sebelum mengirim</div><div class="cs">Data dari semua langkah sebelumnya</div></div>
+    </div>
+    <div id="summary"></div>
+  </div>
+
+  <div class="disc">
+    <i class="ti ti-alert-triangle" style="font-size:15px;flex-shrink:0;margin-top:1px"></i>
+    <span>Dengan mengirim laporan ini, saya menyatakan bahwa seluruh informasi yang diberikan adalah benar dan dapat dipertanggungjawabkan. Data teknis perangkat telah dikunci otomatis oleh sistem.</span>
+  </div>
+
+  <div class="nav">
+    <button class="btn-back" onclick="goStep(2)"><i class="ti ti-arrow-left"></i> Kembali</button>
+    <button class="btn-next" id="btn-kirim" onclick="submit()"><i class="ti ti-send"></i>Kirim laporan</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SUCCESS ═══════════════════════════ -->
+<div id="step-success" class="wrap" style="display:none">
+  <div class="success-card">
+    <div class="success-icon"><i class="ti ti-circle-check"></i></div>
+    <h2>Laporan berhasil dikirim!</h2>
+    <p>Data perangkat Anda telah tersimpan dan diverifikasi. Tim IT akan menindaklanjuti dalam 2×24 jam kerja.</p>
+    <div class="receipt" id="receipt"></div>
+    <button class="btn-new" onclick="location.reload()"><i class="ti ti-refresh"></i>Isi laporan baru</button>
+  </div>
+</div>
+
+<script>
+const GS_URL = 'https://script.google.com/a/macros/majoo.id/s/AKfycbwtbWUDmAxCy7EWNXxH8tPevkjN3apVWmcessUpcPO31MMgyx_4IglJNPIWHoVXxoQv/exec';
+const COND={};
+const COND_FIELDS=['layar','ts','casing','port','btn','bat'];
+const PH={imei:null,sn:null,extra:[]};
+let GPS={status:'idle',lat:null,lng:null};
+let FP='';
+
+function $(id){return document.getElementById(id)}
+
+/* ── Stepper ── */
+function goStep(n){
+  if(n===2&&!validateStep1())return;
+  if(n===3&&!validateStep2())return;
+  if(n===3)buildSummary();
+  ['step1','step2','step3','step-success'].forEach(id=>$(id).style.display='none');
+  $('step'+n).style.display='block';
+  if(n===2)setTimeout(detectDevice,300);
+  updateStepper(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateStepper(active){
+  for(let i=1;i<=3;i++){
+    const sn=$('sn'+i),sl=$('sl'+i);
+    if(i<active){sn.className='sn done';sn.innerHTML='<i class="ti ti-check" style="font-size:9px"></i>';}
+    else if(i===active){sn.className='sn active';sn.textContent=i;}
+    else{sn.className='sn';sn.textContent=i;}
+    sl.className='sl'+(i===active?' active':'');
+  }
+}
+
+/* ── Validation ── */
+function validateStep1(){
+  let ok=true;
+  const nama=$('f-nama').value.trim();
+  $('f-nama').classList.toggle('err',!nama);
+  showE('em-nama',!nama);if(!nama)ok=false;
+  const eid=$('f-eid').value.trim();
+  const eidok=eid.length>0&&/^\d+$/.test(eid);
+  $('pw-eid').classList.toggle('err',!eidok);
+  showE('em-eid',!eidok);if(!eidok)ok=false;
+  const reg=$('f-reg').value;
+  $('f-reg').classList.toggle('err',!reg);
+  showE('em-reg',!reg);if(!reg)ok=false;
+  if(!ok)window.scrollTo({top:0,behavior:'smooth'});
+  return ok;
+}
+
+function validateStep2(){
+  let ok=true,firstErr=null;
+  [['f-brand','em-brand'],['f-model','em-model'],['f-sn','em-sn']].forEach(([fid,eid])=>{
+    const v=$(fid).value.trim();
+    $(fid).classList.toggle('err',!v);
+    showE(eid,!v);
+    if(!v){if(!firstErr)firstErr=$(fid);ok=false;}
+    else hideE(eid);
+  });
+  const imei=$('f-imei').value;
+  const imeiOk=/^\d{15}$/.test(imei);
+  $('f-imei').classList.toggle('err',!imeiOk);
+  showE('em-imei',!imeiOk);
+  if(!imeiOk){if(!firstErr)firstErr=$('f-imei');ok=false;}
+  COND_FIELDS.forEach(f=>{
+    const missing=!COND[f];
+    showE('em-'+f,missing);
+    const cg=$('cg-'+f);
+    if(missing){
+      if(cg){cg.classList.remove('shake');void cg.offsetWidth;cg.classList.add('shake');}
+      if(!firstErr)firstErr=$('f-'+f);
+      ok=false;
+    }
+  });
+  if(!ok&&firstErr)firstErr.scrollIntoView({behavior:'smooth',block:'center'});
+  return ok;
+}
+
+function showE(id,show){const el=$(id);if(el)el.classList.toggle('show',show)}
+function hideE(id){const el=$(id);if(el)el.classList.remove('show')}
+
+/* ── GPS ── */
+function gpsRender(){
+  const s=GPS.status;
+  const badge=$('gps-badge');
+  const area=$('gps-area');
+  if(s==='idle'){
+    badge.textContent='Belum diakses';badge.className='fv muted';
+    area.innerHTML=`<div class="gps-idle"><div class="gps-idle-ico"><i class="ti ti-map-pin"></i></div><div><div class="gps-idle-title">Izinkan akses lokasi</div><div class="gps-idle-sub">Digunakan untuk memverifikasi bahwa laporan dibuat dari wilayah kerja yang sesuai. Lokasi tidak dibagikan ke pihak lain. Jika ditolak, laporan tetap dapat dikirim dan akan ditandai untuk verifikasi manual oleh admin.</div><button class="btn-allow" onclick="startGPS()"><i class="ti ti-map-pin"></i>Izinkan akses lokasi</button></div></div>`;
+  } else if(s==='loading'){
+    badge.innerHTML='<span class="sp dark"></span>';badge.className='fv muted';
+    area.innerHTML=`<div class="gbox loading"><i class="ti ti-map-pin gi"></i><div><div class="gtitle">Mengakses lokasi...</div><div class="gsub">Mohon izinkan permintaan akses lokasi yang muncul di browser Anda.</div></div></div>`;
+  } else if(s==='ok'){
+    badge.textContent=GPS.lat.toFixed(3)+', '+GPS.lng.toFixed(3);badge.className='fv ok';
+    area.innerHTML=`<div class="gbox ok"><i class="ti ti-circle-check gi"></i><div><div class="gtitle">Lokasi berhasil diverifikasi</div><div class="gsub">${GPS.lat.toFixed(5)}, ${GPS.lng.toFixed(5)}</div></div></div>`;
+  } else {
+    const m={denied:{cls:'err',icon:'ti-map-pin-off',title:'Akses lokasi ditolak',btn:''},unavailable:{cls:'warn',icon:'ti-wifi-off',title:'Sinyal GPS tidak tersedia',btn:'amber'},timeout:{cls:'warn',icon:'ti-clock-x',title:'Waktu habis saat mengakses GPS',btn:'amber'},blocked:{cls:'warn',icon:'ti-lock',title:'GPS tidak tersedia',btn:'amber'}}[s]||{cls:'warn',icon:'ti-alert-triangle',title:'GPS tidak tersedia',btn:'amber'};
+    badge.innerHTML='<i class="ti ti-alert-triangle" style="font-size:10px;margin-right:2px"></i>Tidak tersedia';badge.className='fv warn';
+    area.innerHTML=`<div class="gbox ${m.cls}"><i class="ti ${m.icon} gi"></i><div><div class="gtitle">${m.title}</div><div class="gsub">Laporan tetap dapat dikirim dan akan ditandai untuk verifikasi manual oleh admin.</div><div class="gflag"><i class="ti ti-flag" style="font-size:9px"></i>GPS tidak tersedia — perlu verifikasi manual</div><button class="btn-retry ${m.btn}" onclick="startGPS()"><i class="ti ti-refresh"></i>Coba lagi</button></div></div>`;
+  }
+}
+
+function startGPS(){
+  GPS={status:'loading',lat:null,lng:null};gpsRender();
+  if(!navigator.geolocation){GPS.status='blocked';gpsRender();return;}
+  navigator.geolocation.getCurrentPosition(
+    p=>{GPS={status:'ok',lat:p.coords.latitude,lng:p.coords.longitude};gpsRender();},
+    e=>{GPS.status=e.code===1?'denied':e.code===2?'unavailable':'timeout';GPS.lat=null;GPS.lng=null;gpsRender();},
+    {timeout:12000,enableHighAccuracy:true}
+  );
+}
+
+/* ── Device detect ── */
+function detectDevice(){
+  const ua=navigator.userAgent;
+  let os='Tidak diketahui',dtype='Tidak diketahui',hint='';
+  if(/Android/i.test(ua)){os='Android '+((ua.match(/Android\s([\d.]+)/)||[])[1]||'');dtype=!(/Mobile/i.test(ua))||(screen.width>=600)?'Tablet':'Smartphone';hint='Android: Pengaturan › Tentang perangkat › Status › Serial number';}
+  else if(/Windows/i.test(ua)){os='Windows '+((ua.match(/Windows NT ([\d.]+)/)||[])[1]||'');dtype='Laptop / PC';hint='Windows: buka CMD → <code>wmic bios get serialnumber</code> atau cek label di bawah laptop.';}
+  else if(/iPad/i.test(ua)||(/Macintosh/i.test(ua)&&navigator.maxTouchPoints>1)){os='iPadOS';dtype='Tablet (iPad)';hint='iPad: Pengaturan › Umum › Tentang › Nomor Seri';}
+  else if(/iPhone/i.test(ua)){os='iOS';dtype='Smartphone (iPhone)';hint='iPhone: Pengaturan › Umum › Tentang › Nomor Seri';}
+  else if(/Mac/i.test(ua)){os='macOS';dtype='Laptop (Mac)';hint='Mac: Apple menu › Tentang Mac ini › Nomor Seri';}
+  else if(/Linux/i.test(ua)){os='Linux';dtype='Laptop / Desktop';}
+  const cpu=navigator.hardwareConcurrency||'—';
+  const ram=navigator.deviceMemory?navigator.deviceMemory+' GB':'—';
+  const res=screen.width+'×'+screen.height;
+  const touch=navigator.maxTouchPoints>0;
+  setTimeout(()=>{
+    [['d-os',os],['d-type',dtype],['d-cpu',cpu+(cpu!=='—'?' core':'')],['d-ram',ram],['d-res',res],['d-touch',touch?'Touchscreen':'Non-touch']].forEach(([id,v])=>{
+      const el=$(id);el.innerHTML='<i class="lock-ic ti ti-lock"></i>'+v;el.className='di-val';
+    });
+    $('dp-status').className='dp-status done';$('dp-status').textContent='Terdeteksi';
+    $('f-dtype').value=dtype;$('f-os').value=os;
+    if(hint)$('sn-hint').innerHTML=hint;
+  },800);
+}
+
+/* ── IMEI ── */
+function onIMEI(){
+  const v=$('f-imei').value,fill=$('imei-fill'),hint=$('imei-hint');
+  fill.style.width=Math.min(v.length/15*100,100)+'%';
+  if(v.length===0){fill.style.background='#e0e0da';hint.textContent='Masukkan 15 digit angka';hint.style.color='#888';}
+  else if(v.length<15){fill.style.background='#EF9F27';hint.textContent=v.length+'/15 digit — kurang '+(15-v.length)+' lagi';hint.style.color='#BA7517';}
+  else{fill.style.background='#1D9E75';hint.innerHTML='<i class="ti ti-circle-check" style="color:#1D9E75;margin-right:2px"></i>IMEI valid — 15 digit';hint.style.color='#1D9E75';hideE('em-imei');$('f-imei').classList.remove('err');}
+}
+
+/* ── Condition ── */
+function sel(btn,group,val){
+  btn.closest('.cg').querySelectorAll('.cb').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');COND[group]=val;hideE('em-'+group);
+  const done=COND_FIELDS.filter(f=>COND[f]).length;
+  $('pb').style.width=Math.round(done/COND_FIELDS.length*100)+'%';
+  $('pb-lbl').textContent=done+' / '+COND_FIELDS.length+' dipilih';
+}
+
+function updBat(v){
+  v=Math.round(v);$('bat-pct').textContent=v+'%';
+  const f=$('bat-fill');f.style.width=v+'%';
+  f.style.background=v>=50?'#1D9E75':v>=20?'#EF9F27':'#E24B4A';
+}
+
+/* ── Photos ── */
+function loadSlot(input,slot){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    PH[slot]=e.target.result;
+    $('slot-'+slot).classList.add('filled');
+    $('thumb-'+slot).src=e.target.result;
+    hideE('em-photo');buildSummary();
+  };
+  r.readAsDataURL(f);
+}
+
+function loadExtra(input){
+  PH.extra=[];
+  const strip=$('extra-strip');strip.innerHTML='';
+  Array.from(input.files).slice(0,4).forEach((f,i)=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      PH.extra.push(e.target.result);
+      const w=document.createElement('div');w.className='extra-item';
+      const img=document.createElement('img');img.src=e.target.result;img.alt='foto '+(i+1);
+      const lbl=document.createElement('div');lbl.className='extra-lbl';lbl.textContent='Foto '+(i+1);
+      w.appendChild(img);w.appendChild(lbl);strip.appendChild(w);
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+/* ── Summary ── */
+function cpill(v){const m={b:['b','Baik'],s:['s','Perlu perhatian'],r:['r','Perlu penggantian']};const[cls,lbl]=(m[v]||['','—']);return cls?`<span class="cpill ${cls}">${lbl}</span>`:'<span style="color:#888">—</span>';}
+
+function buildSummary(){
+  const photoCount=[PH.imei,PH.sn,...PH.extra].filter(Boolean).length;
+  const gpsStr=GPS.status==='ok'?`<span class="gpill ok"><i class="ti ti-map-pin" style="font-size:9px"></i>${GPS.lat.toFixed(4)}, ${GPS.lng.toFixed(4)}</span>`:`<span class="gpill warn"><i class="ti ti-alert-triangle" style="font-size:9px"></i>Tidak tersedia — verifikasi manual</span>`;
+  const rows=[
+    ['Nama',$('f-nama').value||'—'],
+    ['ID Karyawan','MTI-'+($('f-eid').value||'—')],
+    ['Regional',$('f-reg').value||'—'],
+    ['Jenis perangkat',$('f-dtype').value||'—'],
+    ['Merek',$('f-brand').value||'—'],
+    ['Model',$('f-model').value||'—'],
+    ['Serial Number',$('f-sn').value||'—'],
+    ['IMEI',$('f-imei').value||'—'],
+    ['Lokasi GPS',gpsStr],
+  ];
+  const conds=[['Layar','layar'],['Touchscreen','ts'],['Casing','casing'],['Port','port'],['Tombol','btn'],['Baterai','bat']];
+  let html=rows.map(([l,v])=>`<div class="sum-row"><span class="sum-lbl">${l}</span><span class="sum-val">${v}</span></div>`).join('');
+  html+=conds.map(([l,k])=>`<div class="sum-row"><span class="sum-lbl">${l}</span><span class="sum-val">${cpill(COND[k])}</span></div>`).join('');
+  html+=`<div class="sum-row"><span class="sum-lbl">Foto</span><span class="sum-val">${photoCount} foto${PH.imei?' <i class="ti ti-device-mobile" style="font-size:10px;color:#1D9E75"></i>':''}${PH.sn?' <i class="ti ti-qrcode" style="font-size:10px;color:#1D9E75"></i>':''}</span></div>`;
+  $('summary').innerHTML=html;
+}
+
+/* ── Submit ── */
+function submit(){
+  if(!PH.imei||!PH.sn){showE('em-photo',true);$('slot-imei').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  const btn=$('btn-kirim');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Mengirim...';
+  setTimeout(()=>{
+    const rptId='RPT-MTI-'+Date.now().toString().slice(-6);
+    const total=[PH.imei,PH.sn,...PH.extra].filter(Boolean).length;
+    const gpsStr=GPS.status==='ok'?GPS.lat.toFixed(5)+', '+GPS.lng.toFixed(5):'⚠ Tidak tersedia — perlu verifikasi manual';
+    // Push to Google Sheets
+    const payload={
+      rptId,
+      nama:$('f-nama').value,
+      eid:'MTI-'+$('f-eid').value,
+      regional:$('f-reg').value,
+      dtype:$('f-dtype').value,
+      os:$('f-os').value,
+      brand:$('f-brand').value,
+      model:$('f-model').value,
+      sn:$('f-sn').value,
+      imei:$('f-imei').value,
+      ram:navigator.deviceMemory?navigator.deviceMemory+' GB':'—',
+      cpu:navigator.hardwareConcurrency||'—',
+      res:screen.width+'x'+screen.height,
+      touch:navigator.maxTouchPoints>0?'Touchscreen':'Non-touch',
+      layar:COND.layar||'',
+      ts:COND.ts||'',
+      casing:COND.casing||'',
+      port:COND.port||'',
+      btn:COND.btn||'',
+      bat:COND.bat||'',
+      batPct:$('bat-range').value,
+      catatan:$('f-cat').value,
+      gpsLat:GPS.lat||'',
+      gpsLng:GPS.lng||'',
+      gpsStatus:GPS.status,
+      fp:FP,
+      photoCount:total
+    };
+    fetch(GS_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
+    $('receipt').innerHTML=[
+      ['No. laporan',rptId],
+      ['Nama',$('f-nama').value],
+      ['ID Karyawan','MTI-'+$('f-eid').value],
+      ['Regional',$('f-reg').value],
+      ['Perangkat',$('f-brand').value+' '+$('f-model').value],
+      ['Serial Number',$('f-sn').value],
+      ['IMEI',$('f-imei').value],
+      ['Foto',total+' foto'],
+      ['Lokasi GPS',gpsStr],
+      ['Device FP',FP.slice(0,14)+'…'],
+      ['Waktu kirim',new Date().toLocaleString('id-ID')],
+    ].map(([l,v])=>`<div class="rr"><span>${l}</span><strong style="${l==='Lokasi GPS'&&v.includes('⚠')?'color:#BA7517':''}">${v}</strong></div>`).join('');
+    ['step1','step2','step3'].forEach(id=>$(id).style.display='none');
+    $('step-success').style.display='block';
+    for(let i=1;i<=3;i++){$('sn'+i).className='sn done';$('sn'+i).innerHTML='<i class="ti ti-check" style="font-size:9px"></i>';}
+    window.scrollTo({top:0,behavior:'smooth'});
+  },1500);
+}
+
+/* ── Init ── */
+(function init(){
+  const raw=navigator.userAgent+(navigator.language||'')+(navigator.hardwareConcurrency||0)+(navigator.deviceMemory||0)+screen.width+'x'+screen.height+'x'+screen.colorDepth;
+  let h=0;for(let i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}
+  FP='FP'+Math.abs(h).toString(16).toUpperCase().padStart(8,'0');
+  $('fp-v').textContent=FP.slice(0,12)+'…';
+  $('ts-v').textContent=new Date().toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const conn=navigator.connection;
+  $('net-v').textContent=conn?(conn.effectiveType||conn.type||'WiFi').toUpperCase():'Terdeteksi';
+  gpsRender();
+})();
+</script>
+</body>
+</html>
