@@ -550,7 +550,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;color:#2C2C2
 </div>
 
 <script>
-const GS_URL = 'https://script.google.com/a/macros/majoo.id/s/AKfycbwtbWUDmAxCy7EWNXxH8tPevkjN3apVWmcessUpcPO31MMgyx_4IglJNPIWHoVXxoQv/exec';
+const SUPA_URL = 'https://zoczcrqibssvpnvkvlso.supabase.co';
+const SUPA_KEY = 'sb_publishable__4o2EB_xcJQLgIkBT9Souw_uWtTsq2T';
 const COND={};
 const COND_FIELDS=['layar','ts','casing','port','btn','bat'];
 const PH={imei:null,sn:null,extra:[]};
@@ -797,9 +798,60 @@ function submit(){
       gpsLng:GPS.lng||'',
       gpsStatus:GPS.status,
       fp:FP,
-      photoCount:total
+      photoCount:total,
+      fotoImei: PH.imei ? 'uploaded' : null,
+      fotoSN: PH.sn ? 'uploaded' : null,
+      fotoExtra: PH.extra.length > 0 ? PH.extra.length + ' foto' : null
     };
-    fetch(GS_URL,{method:'POST',body:JSON.stringify(payload)}).catch(()=>{});
+    // Kirim ke Supabase
+    try {
+      const supaPayload = {
+        rpt_id: payload.rptId,
+        nama: payload.nama,
+        employee_id: payload.eid,
+        regional: payload.regional,
+        jenis_perangkat: payload.dtype,
+        os: payload.os,
+        merek: payload.brand,
+        model: payload.model,
+        serial_number: payload.sn,
+        imei: payload.imei,
+        ram: payload.ram,
+        cpu_cores: String(payload.cpu),
+        resolusi: payload.res,
+        touch_input: payload.touch,
+        kondisi_layar: payload.layar,
+        kondisi_ts: payload.ts,
+        kondisi_casing: payload.casing,
+        kondisi_port: payload.port,
+        kondisi_tombol: payload.btn,
+        kondisi_baterai: payload.bat,
+        pct_baterai: parseInt(payload.batPct)||0,
+        catatan: payload.catatan,
+        gps_lat: payload.gpsLat||null,
+        gps_lng: payload.gpsLng||null,
+        gps_status: payload.gpsStatus,
+        device_fp: payload.fp,
+        foto_imei_url: payload.fotoImei||null,
+        foto_sn_url: payload.fotoSN||null,
+        foto_extra_urls: payload.fotoExtra||null,
+        foto_count: payload.photoCount||0
+      };
+      const res = await fetch(SUPA_URL + '/rest/v1/laporan_aset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(supaPayload)
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        console.warn('Supabase error:', err);
+      }
+    } catch(err) { console.warn('Submit error:', err); }
     $('receipt').innerHTML=[
       ['No. laporan',rptId],
       ['Nama',$('f-nama').value],

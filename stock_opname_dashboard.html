@@ -8,56 +8,43 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;color:#2C2C2A;min-height:100vh}
-
-/* TOPBAR */
 .topbar{background:#fff;border-bottom:0.5px solid #e0e0da;padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px}
 .logo{width:30px;height:30px;background:#1D9E75;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
 .top-right{display:flex;align-items:center;gap:8px}
-.top-badge{font-size:10px;background:#E1F5EE;color:#085041;padding:3px 9px;border-radius:20px;font-weight:700}
-.btn-refresh{display:flex;align-items:center;gap:5px;padding:7px 14px;border:0.5px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:#2C2C2A;font-family:inherit;transition:all .15s}
-.btn-refresh:hover{background:#f5f5f3}
-.btn-export{display:flex;align-items:center;gap:5px;padding:7px 14px;border:none;border-radius:8px;background:#1D9E75;cursor:pointer;font-size:12px;font-weight:700;color:#fff;font-family:inherit;transition:all .15s}
-.btn-export:hover{background:#0F6E56}
-
-/* LAYOUT */
+.sync-info{font-size:11px;color:#888;display:flex;align-items:center;gap:4px}
+.btn{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:all .15s}
+.btn-outline{border:0.5px solid #ccc;background:#fff;color:#2C2C2A}
+.btn-outline:hover{background:#f5f5f3}
+.btn-primary{border:none;background:#1D9E75;color:#fff}
+.btn-primary:hover{background:#0F6E56}
 .main{max-width:1200px;margin:0 auto;padding:24px}
-
-/* METRICS */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
-@media(max-width:700px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:800px){.metrics{grid-template-columns:repeat(2,1fr)}}
 .metric{background:#fff;border:0.5px solid #ddddd8;border-radius:12px;padding:16px 18px}
-.metric-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.metric-value{font-size:28px;font-weight:700;color:#2C2C2A;line-height:1}
-.metric-sub{font-size:11px;color:#888;margin-top:4px}
-.metric.success .metric-value{color:#1D9E75}
-.metric.warning .metric-value{color:#BA7517}
-.metric.danger .metric-value{color:#E24B4A}
-
-/* FILTERS */
-.filter-bar{background:#fff;border:0.5px solid #ddddd8;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.filter-bar input[type=text]{padding:7px 11px;border:0.5px solid #ccc;border-radius:8px;font-size:13px;background:#fff;color:#2C2C2A;outline:none;font-family:inherit;min-width:220px;flex:1}
+.metric-lbl{font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.metric-val{font-size:26px;font-weight:700;color:#2C2C2A;line-height:1}
+.metric-sub{font-size:11px;color:#888;margin-top:3px}
+.metric.success .metric-val{color:#1D9E75}
+.metric.warning .metric-val{color:#BA7517}
+.metric.danger .metric-val{color:#E24B4A}
+.metric.info .metric-val{color:#185FA5}
+.prog-bar{height:5px;background:#e0e0da;border-radius:3px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;background:#1D9E75;border-radius:3px;transition:width .6s}
+.filter-bar{background:#fff;border:0.5px solid #ddddd8;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-bar input{padding:7px 11px;border:0.5px solid #ccc;border-radius:8px;font-size:13px;outline:none;font-family:inherit;min-width:200px;flex:1}
 .filter-bar input:focus{border-color:#1D9E75}
 .filter-bar select{padding:7px 11px;border:0.5px solid #ccc;border-radius:8px;font-size:13px;background:#fff;color:#2C2C2A;outline:none;font-family:inherit;cursor:pointer}
-.filter-bar select:focus{border-color:#1D9E75}
-.filter-count{font-size:12px;color:#888;margin-left:4px;white-space:nowrap}
-.btn-clear{padding:7px 12px;border:0.5px solid #ccc;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;color:#888;font-family:inherit;display:flex;align-items:center;gap:4px}
-.btn-clear:hover{background:#f5f5f3}
-
-/* TABLE */
+.filter-count{font-size:12px;color:#888;white-space:nowrap}
 .table-wrap{background:#fff;border:0.5px solid #ddddd8;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:860px}
 .table-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
-thead{background:#f5f5f3;position:sticky;top:106px}
+thead{background:#f5f5f3}
 th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.4px;border-bottom:0.5px solid #e0e0da;white-space:nowrap;cursor:pointer;user-select:none}
 th:hover{color:#2C2C2A}
-th .sort-ic{font-size:10px;margin-left:3px;opacity:.4}
-th.sorted .sort-ic{opacity:1;color:#1D9E75}
-td{padding:10px 14px;border-bottom:0.5px solid #f0f0ea;vertical-align:middle;color:#2C2C2A}
+td{padding:10px 14px;border-bottom:0.5px solid #f0f0ea;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafaf8;cursor:pointer}
-
-/* BADGES */
 .pill{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
 .pill.baik{background:#E1F5EE;color:#085041}
 .pill.sedang{background:#FAEEDA;color:#633806}
@@ -67,64 +54,46 @@ tr:hover td{background:#fafaf8;cursor:pointer}
 .pill.printer{background:#F1EFE8;color:#444441}
 .pill.gps-ok{background:#E1F5EE;color:#085041}
 .pill.gps-warn{background:#FAEEDA;color:#633806}
-
-/* MINI BAR */
-.mini-bar{width:56px;height:5px;border-radius:3px;background:#e0e0da;display:inline-block;vertical-align:middle}
+.mini-bar{width:52px;height:5px;border-radius:3px;background:#e0e0da;display:inline-block;vertical-align:middle}
 .mini-fill{height:100%;border-radius:3px}
-
-/* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:0.5px solid #e0e0da;flex-wrap:wrap;gap:8px}
 .pag-info{font-size:12px;color:#888}
 .pag-btns{display:flex;gap:4px}
 .pag-btn{padding:5px 10px;border:0.5px solid #ccc;border-radius:6px;background:#fff;cursor:pointer;font-size:12px;color:#2C2C2A;font-family:inherit;min-width:32px;text-align:center}
-.pag-btn:hover:not(.active):not(:disabled){background:#f5f5f3}
+.pag-btn:hover:not(.active):not([disabled]){background:#f5f5f3}
 .pag-btn.active{background:#1D9E75;border-color:#1D9E75;color:#fff;font-weight:700}
-.pag-btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* EMPTY / LOADING STATE */
+.pag-btn[disabled]{opacity:.4;cursor:not-allowed}
 .state-box{padding:48px 24px;text-align:center}
 .state-box i{font-size:36px;color:#ccc;display:block;margin-bottom:10px}
 .state-box p{font-size:13px;color:#888}
-
-/* DRAWER */
 .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200}
 .drawer-overlay.open{display:block}
-.drawer{position:fixed;right:0;top:0;height:100%;width:420px;max-width:95vw;background:#fff;border-left:0.5px solid #e0e0da;z-index:201;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
+.drawer{position:fixed;right:0;top:0;height:100%;width:400px;max-width:95vw;background:#fff;border-left:0.5px solid #e0e0da;z-index:201;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column}
 .drawer.open{transform:translateX(0)}
-.drawer-head{padding:18px 20px;border-bottom:0.5px solid #e0e0da;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.drawer-head h2{font-size:16px;font-weight:600}
+.drawer-head{padding:16px 20px;border-bottom:0.5px solid #e0e0da;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.drawer-head h2{font-size:15px;font-weight:600}
 .drawer-close{background:none;border:none;cursor:pointer;font-size:20px;color:#888;line-height:1;padding:4px}
-.drawer-body{padding:20px;overflow-y:auto;flex:1}
-.dr{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:0.5px solid #f0f0ea;font-size:13px;gap:12px}
+.drawer-body{padding:18px 20px;overflow-y:auto;flex:1}
+.dr{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:0.5px solid #f0f0ea;font-size:12px;gap:12px}
 .dr:last-child{border-bottom:none}
-.dr-lbl{font-size:11px;color:#888;flex-shrink:0;padding-top:1px}
-.dr-val{font-weight:500;text-align:right;word-break:break-word}
-.drawer-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;margin:16px 0 6px}
-.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.photo-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:0.5px solid #e0e0da}
-.photo-lbl{font-size:9px;font-weight:700;text-align:center;color:#888;margin-top:3px}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2C2C2A;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:300;display:none;align-items:center;gap:8px;white-space:nowrap}
+.dr-lbl{font-size:11px;color:#888;flex-shrink:0}
+.dr-val{font-weight:500;text-align:right;word-break:break-word;max-width:220px}
+.drawer-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;margin:14px 0 6px;padding-bottom:5px;border-bottom:0.5px solid #e0e0da}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2C2C2A;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:300;display:none;align-items:center;gap:8px;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2)}
 .toast.show{display:flex}
-
-/* LOADING OVERLAY */
-.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.9);z-index:400;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
 .loading-overlay.hide{display:none}
 .loading-overlay p{font-size:13px;color:#888;font-weight:500}
 .sp{display:inline-block;width:28px;height:28px;border:3px solid #e0e0da;border-top-color:#1D9E75;border-radius:50%;animation:spin .7s linear infinite}
-.sp-sm{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
+.sp-sm{display:inline-block;width:9px;height:9px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* LAST SYNC */
-.sync-info{font-size:11px;color:#888;display:flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
 
-<div class="loading-overlay" id="loading-overlay">
+<div class="loading-overlay" id="loading">
   <div class="sp"></div>
-  <p>Memuat data dari Google Sheets...</p>
+  <p>Memuat data dari Supabase...</p>
 </div>
 
 <div class="topbar">
@@ -134,390 +103,299 @@ tr:hover td{background:#fafaf8;cursor:pointer}
   </div>
   <div class="top-right">
     <span class="sync-info" id="sync-info"><i class="ti ti-clock"></i>Belum disinkron</span>
-    <button class="btn-refresh" onclick="loadData()"><i class="ti ti-refresh"></i>Refresh</button>
-    <button class="btn-export" onclick="exportCSV()"><i class="ti ti-download"></i>Export CSV</button>
-    <span class="top-badge">General Affair</span>
+    <button class="btn btn-outline" onclick="loadData()"><i class="ti ti-refresh"></i>Refresh</button>
+    <button class="btn btn-primary" onclick="exportCSV()"><i class="ti ti-download"></i>Export CSV</button>
+    <span style="font-size:10px;background:#E1F5EE;color:#085041;padding:3px 9px;border-radius:20px;font-weight:700">General Affair</span>
   </div>
 </div>
 
 <div class="main">
-
-  <!-- METRICS -->
   <div class="metrics" id="metrics">
-    <div class="metric"><div class="metric-label"><i class="ti ti-clipboard-list"></i>Total laporan</div><div class="metric-value" id="m-total">—</div><div class="metric-sub">dari target 300</div></div>
-    <div class="metric success"><div class="metric-label"><i class="ti ti-circle-check"></i>Kondisi baik</div><div class="metric-value" id="m-baik">—</div><div class="metric-sub">perangkat</div></div>
-    <div class="metric warning"><div class="metric-label"><i class="ti ti-alert-triangle"></i>Perlu perhatian</div><div class="metric-value" id="m-sedang">—</div><div class="metric-sub">perangkat</div></div>
-    <div class="metric danger"><div class="metric-label"><i class="ti ti-tool"></i>Perlu penggantian</div><div class="metric-value" id="m-rusak">—</div><div class="metric-sub">perangkat</div></div>
+    <div class="metric"><div class="metric-lbl"><i class="ti ti-clipboard-list"></i>Total laporan</div><div class="metric-val" id="m-total">—</div><div class="metric-sub">dari target 600</div><div class="prog-bar"><div class="prog-fill" id="m-prog" style="width:0%"></div></div></div>
+    <div class="metric success"><div class="metric-lbl"><i class="ti ti-circle-check"></i>Kondisi baik</div><div class="metric-val" id="m-baik">—</div><div class="metric-sub">perangkat</div></div>
+    <div class="metric warning"><div class="metric-lbl"><i class="ti ti-alert-triangle"></i>Perlu perhatian</div><div class="metric-val" id="m-sedang">—</div><div class="metric-sub">perangkat</div></div>
+    <div class="metric danger"><div class="metric-lbl"><i class="ti ti-tool"></i>Perlu penggantian</div><div class="metric-val" id="m-rusak">—</div><div class="metric-sub">perangkat</div></div>
+    <div class="metric info"><div class="metric-lbl"><i class="ti ti-map-pin-off"></i>GPS perlu verifikasi</div><div class="metric-val" id="m-gps">—</div><div class="metric-sub">laporan</div></div>
   </div>
 
-  <!-- FILTERS -->
   <div class="filter-bar">
-    <input type="text" id="f-search" placeholder="Cari nama, ID, merek, model, IMEI..." oninput="applyFilters()">
-    <select id="f-regional" onchange="applyFilters()">
+    <input type="text" id="f-search" placeholder="Cari nama, ID, merek, model, IMEI, S/N..." oninput="applyFilters()">
+    <select id="f-reg" onchange="applyFilters()">
       <option value="">Semua regional</option>
       <option>Metro</option><option>Jabar - Banten</option><option>Jawa - Bali</option>
       <option>Sumatera</option><option>Kalsulpap</option><option>Telesales</option><option>Telesales Malang</option>
     </select>
-    <select id="f-device" onchange="applyFilters()">
+    <select id="f-dev" onchange="applyFilters()">
       <option value="">Semua perangkat</option>
-      <option value="Tablet">Tablet</option>
-      <option value="Laptop">Laptop</option>
-      <option value="Printer">Printer</option>
+      <option value="tablet">Tablet</option><option value="laptop">Laptop</option><option value="printer">Printer</option>
     </select>
-    <select id="f-kondisi" onchange="applyFilters()">
+    <select id="f-kond" onchange="applyFilters()">
       <option value="">Semua kondisi</option>
-      <option value="baik">Baik</option>
-      <option value="sedang">Perlu perhatian</option>
-      <option value="rusak">Perlu penggantian</option>
+      <option value="Baik">Baik</option>
+      <option value="Perlu Perhatian">Perlu perhatian</option>
+      <option value="Perlu Penggantian">Perlu penggantian</option>
     </select>
     <select id="f-gps" onchange="applyFilters()">
       <option value="">Semua GPS</option>
       <option value="ok">GPS terverifikasi</option>
-      <option value="missing">Perlu verifikasi manual</option>
+      <option value="missing">Perlu verifikasi</option>
     </select>
-    <button class="btn-clear" onclick="clearFilters()"><i class="ti ti-x"></i>Reset</button>
-    <span class="filter-count" id="filter-count"></span>
+    <button class="btn btn-outline" onclick="clearFilters()" style="padding:7px 10px"><i class="ti ti-x"></i></button>
+    <span class="filter-count" id="f-count"></span>
   </div>
 
-  <!-- TABLE -->
   <div class="table-wrap">
     <div class="table-scroll">
-      <table id="main-table">
+      <table>
         <thead>
           <tr>
-            <th onclick="sortBy('Timestamp')">Tgl laporan <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('No. Laporan')">No. laporan <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('Nama')">Nama <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('ID Karyawan')">ID Karyawan <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('Regional')">Regional <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('Jenis Perangkat')">Perangkat <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('Merek')">Merek / Model <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('% Baterai')">Baterai <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('Kondisi Layar')">Layar <i class="ti ti-selector sort-ic"></i></th>
-            <th onclick="sortBy('_overall')">Kondisi umum <i class="ti ti-selector sort-ic"></i></th>
+            <th onclick="sortBy('created_at')">Tgl laporan <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('rpt_id')">No. laporan <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('nama')">Nama <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('employee_id')">ID Karyawan <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('regional')">Regional <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('jenis_perangkat')">Perangkat <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('merek')">Merek / Model <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('pct_baterai')">Baterai <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('kondisi_layar')">Layar <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
+            <th onclick="sortBy('kondisi_umum')">Kondisi umum <i class="ti ti-selector" style="font-size:10px;opacity:.4"></i></th>
             <th>GPS</th>
             <th>Foto</th>
           </tr>
         </thead>
-        <tbody id="table-body"></tbody>
+        <tbody id="tbody"></tbody>
       </table>
     </div>
     <div class="pagination" id="pagination"></div>
   </div>
 </div>
 
-<!-- DRAWER -->
-<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer-overlay" id="d-overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-head">
-    <h2 id="drawer-title">Detail laporan</h2>
+    <h2 id="d-title">Detail laporan</h2>
     <button class="drawer-close" onclick="closeDrawer()"><i class="ti ti-x"></i></button>
   </div>
-  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-body" id="d-body"></div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg"></span></div>
+<div class="toast" id="toast"></div>
 
 <script>
-const GS_URL = 'https://script.google.com/a/macros/majoo.id/s/AKfycbwtbWUDmAxCy7EWNXxH8tPevkjN3apVWmcessUpcPO31MMgyx_4IglJNPIWHoVXxoQv/exec';
+const SUPA_URL = 'https://zoczcrqibssvpnvkvlso.supabase.co';
+const SUPA_KEY = 'sb_publishable__4o2EB_xcJQLgIkBT9Souw_uWtTsq2T';
+const TARGET   = 600;
+const PAGE_SIZE = 20;
 
-let ALL_DATA = [];
-let FILTERED = [];
-let SORT_KEY = 'Timestamp';
-let SORT_DIR = -1;
-let PAGE = 1;
-const PAGE_SIZE = 15;
+let ALL=[], FILTERED=[], PAGE=1, SORT_KEY='created_at', SORT_DIR=-1;
 
-/* ── Load data ── */
-async function loadData() {
-  document.getElementById('loading-overlay').classList.remove('hide');
-  document.getElementById('btn-refresh').innerHTML = '<span class="sp-sm"></span> Memuat...';
+async function loadData(){
+  document.getElementById('loading').classList.remove('hide');
+  document.querySelector('[onclick="loadData()"]').innerHTML='<span class="sp-sm"></span> Memuat...';
   try {
-    const res = await fetch(GS_URL + '?t=' + Date.now());
-    const json = await res.json();
-    ALL_DATA = (json.data || []).map(row => {
-      row._overall = calcOverall(row);
-      row._ts = new Date(row['Timestamp']);
-      return row;
-    });
-    ALL_DATA.sort((a,b) => b._ts - a._ts);
+    const res = await fetch(
+      SUPA_URL+'/rest/v1/laporan_aset?select=*&order=created_at.desc&limit=1000',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
+    );
+    if(!res.ok) throw new Error(await res.text());
+    ALL = await res.json();
     applyFilters();
     updateMetrics();
-    const now = new Date().toLocaleString('id-ID', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
-    document.getElementById('sync-info').innerHTML = `<i class="ti ti-clock"></i>Sync ${now}`;
-    showToast('Data berhasil dimuat — ' + ALL_DATA.length + ' laporan');
-  } catch(e) {
-    showToast('Gagal memuat data. Cek koneksi atau URL Apps Script.', 'err');
+    const now = new Date().toLocaleString('id-ID',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'});
+    document.getElementById('sync-info').innerHTML=`<i class="ti ti-clock"></i>Sync ${now}`;
+    showToast(`${ALL.length} laporan berhasil dimuat`);
+  } catch(e){
+    showToast('Gagal memuat: '+e.message,'err');
+    console.error(e);
   }
-  document.getElementById('loading-overlay').classList.add('hide');
-  document.getElementById('btn-refresh').innerHTML = '<i class="ti ti-refresh"></i>Refresh';
+  document.getElementById('loading').classList.add('hide');
+  document.querySelector('[onclick="loadData()"]').innerHTML='<i class="ti ti-refresh"></i>Refresh';
 }
 
-/* ── Overall condition ── */
-function calcOverall(row) {
-  const keys = ['Kondisi Layar','Touchscreen','Casing','Port','Tombol','Baterai'];
-  const vals = keys.map(k => (row[k]||'').toString().toLowerCase());
-  if (vals.some(v => v.includes('rusak') || v.includes('pecah') || v.includes('bocor') || v.includes('kembung') || v.includes('penggantian') || v === 'r')) return 'rusak';
-  if (vals.some(v => v.includes('sedang') || v.includes('retak') || v.includes('lecet') || v.includes('longgar') || v.includes('macet') || v.includes('habis') || v === 's')) return 'sedang';
-  if (vals.every(v => v === '' || v === '—')) return '—';
-  return 'baik';
+function updateMetrics(){
+  const t=ALL.length;
+  const baik=ALL.filter(d=>d.kondisi_umum==='Baik').length;
+  const sedang=ALL.filter(d=>d.kondisi_umum==='Perlu Perhatian').length;
+  const rusak=ALL.filter(d=>d.kondisi_umum==='Perlu Penggantian').length;
+  const gps=ALL.filter(d=>d.gps_status!=='ok').length;
+  document.getElementById('m-total').textContent=t;
+  document.getElementById('m-baik').textContent=baik;
+  document.getElementById('m-sedang').textContent=sedang;
+  document.getElementById('m-rusak').textContent=rusak;
+  document.getElementById('m-gps').textContent=gps;
+  document.getElementById('m-prog').style.width=Math.min(Math.round(t/TARGET*100),100)+'%';
 }
 
-/* ── Metrics ── */
-function updateMetrics() {
-  const total = ALL_DATA.length;
-  const rusak = ALL_DATA.filter(d => d._overall === 'rusak').length;
-  const sedang = ALL_DATA.filter(d => d._overall === 'sedang').length;
-  const baik = ALL_DATA.filter(d => d._overall === 'baik').length;
-  document.getElementById('m-total').textContent = total;
-  document.getElementById('m-baik').textContent = baik;
-  document.getElementById('m-sedang').textContent = sedang;
-  document.getElementById('m-rusak').textContent = rusak;
-}
-
-/* ── Filters ── */
-function applyFilters() {
-  const search = document.getElementById('f-search').value.toLowerCase();
-  const regional = document.getElementById('f-regional').value;
-  const device = document.getElementById('f-device').value.toLowerCase();
-  const kondisi = document.getElementById('f-kondisi').value;
-  const gps = document.getElementById('f-gps').value;
-
-  FILTERED = ALL_DATA.filter(d => {
-    const matchSearch = !search ||
-      (d['Nama']||'').toLowerCase().includes(search) ||
-      (d['ID Karyawan']||'').toLowerCase().includes(search) ||
-      (d['Merek']||'').toLowerCase().includes(search) ||
-      (d['Model']||'').toLowerCase().includes(search) ||
-      (d['IMEI']||'').toLowerCase().includes(search) ||
-      (d['Serial Number']||'').toLowerCase().includes(search) ||
-      (d['No. Laporan']||'').toLowerCase().includes(search);
-    const matchReg = !regional || d['Regional'] === regional;
-    const matchDev = !device || (d['Jenis Perangkat']||'').toLowerCase().includes(device);
-    const matchKond = !kondisi || d._overall === kondisi;
-    const matchGPS = !gps || (gps === 'ok' ? d['GPS Status'] === 'ok' : d['GPS Status'] !== 'ok');
-    return matchSearch && matchReg && matchDev && matchKond && matchGPS;
+function applyFilters(){
+  const s=document.getElementById('f-search').value.toLowerCase();
+  const r=document.getElementById('f-reg').value;
+  const d=document.getElementById('f-dev').value.toLowerCase();
+  const k=document.getElementById('f-kond').value;
+  const g=document.getElementById('f-gps').value;
+  FILTERED=ALL.filter(row=>{
+    const ms=!s||(row.nama||'').toLowerCase().includes(s)||(row.employee_id||'').toLowerCase().includes(s)||(row.merek||'').toLowerCase().includes(s)||(row.model||'').toLowerCase().includes(s)||(row.imei||'').includes(s)||(row.serial_number||'').toLowerCase().includes(s)||(row.rpt_id||'').toLowerCase().includes(s);
+    const mr=!r||row.regional===r;
+    const md=!d||(row.jenis_perangkat||'').toLowerCase().includes(d);
+    const mk=!k||row.kondisi_umum===k;
+    const mg=!g||(g==='ok'?row.gps_status==='ok':row.gps_status!=='ok');
+    return ms&&mr&&md&&mk&&mg;
   });
-
-  document.getElementById('filter-count').textContent = FILTERED.length + ' laporan';
-  PAGE = 1;
+  document.getElementById('f-count').textContent=FILTERED.length+' laporan';
+  PAGE=1;
   renderTable();
 }
 
-function clearFilters() {
-  document.getElementById('f-search').value = '';
-  document.getElementById('f-regional').value = '';
-  document.getElementById('f-device').value = '';
-  document.getElementById('f-kondisi').value = '';
-  document.getElementById('f-gps').value = '';
+function clearFilters(){
+  ['f-search','f-reg','f-dev','f-kond','f-gps'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.value='';
+  });
   applyFilters();
 }
 
-/* ── Sort ── */
-function sortBy(key) {
-  if (SORT_KEY === key) SORT_DIR *= -1;
-  else { SORT_KEY = key; SORT_DIR = -1; }
-  FILTERED.sort((a, b) => {
-    let va = a[key] || '', vb = b[key] || '';
-    if (key === 'Timestamp') { va = a._ts; vb = b._ts; }
-    if (key === '_overall') { const o = {rusak:0,sedang:1,baik:2}; va = o[a._overall]??3; vb = o[b._overall]??3; }
-    if (key === '% Baterai') { va = parseFloat(va)||0; vb = parseFloat(vb)||0; }
-    if (va < vb) return -1 * SORT_DIR;
-    if (va > vb) return 1 * SORT_DIR;
+function sortBy(key){
+  if(SORT_KEY===key)SORT_DIR*=-1;
+  else{SORT_KEY=key;SORT_DIR=-1;}
+  FILTERED.sort((a,b)=>{
+    let va=a[key]??'',vb=b[key]??'';
+    if(key==='pct_baterai'){va=parseInt(va)||0;vb=parseInt(vb)||0;}
+    if(key==='kondisi_umum'){const o={'Perlu Penggantian':0,'Perlu Perhatian':1,'Baik':2};va=o[va]??3;vb=o[vb]??3;}
+    if(va<vb)return-1*SORT_DIR;
+    if(va>vb)return 1*SORT_DIR;
     return 0;
   });
-  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
-  PAGE = 1;
-  renderTable();
+  PAGE=1;renderTable();
 }
 
-/* ── Render table ── */
-function condPill(v) {
-  const s = (v||'').toString().toLowerCase();
-  if (s === 'r' || s.includes('rusak') || s.includes('pecah') || s.includes('bocor') || s.includes('kembung') || s.includes('penggantian')) return '<span class="pill rusak">Perlu penggantian</span>';
-  if (s === 's' || s.includes('sedang') || s.includes('retak') || s.includes('lecet') || s.includes('longgar') || s.includes('macet') || s.includes('habis') || s.includes('perhatian')) return '<span class="pill sedang">Perlu perhatian</span>';
-  if (s === 'b' || s === 'baik' || s.includes('normal') || s.includes('mulus') || s.includes('responsif')) return '<span class="pill baik">Baik</span>';
-  return '<span style="color:#888;font-size:11px">—</span>';
+function condPill(v){
+  const s=(v||'').toLowerCase();
+  if(s.includes('penggantian')||s.includes('pecah')||s.includes('bocor')||s.includes('kembung')||s.includes('mati')||s==='r')return'<span class="pill rusak">Perlu penggantian</span>';
+  if(s.includes('perhatian')||s.includes('retak')||s.includes('lecet')||s.includes('longgar')||s.includes('macet')||s.includes('habis')||s==='s')return'<span class="pill sedang">Perlu perhatian</span>';
+  if(s.includes('baik')||s.includes('normal')||s.includes('mulus')||s.includes('responsif')||s==='b')return'<span class="pill baik">Baik</span>';
+  return'<span style="color:#888;font-size:11px">—</span>';
 }
 
-function overallPill(v) {
-  if (v === 'rusak') return '<span class="pill rusak"><i class="ti ti-alert-circle" style="font-size:10px"></i>Perlu penggantian</span>';
-  if (v === 'sedang') return '<span class="pill sedang"><i class="ti ti-alert-triangle" style="font-size:10px"></i>Perlu perhatian</span>';
-  if (v === 'baik') return '<span class="pill baik"><i class="ti ti-circle-check" style="font-size:10px"></i>Baik</span>';
-  return '<span style="color:#888;font-size:11px">—</span>';
+function devPill(v){
+  const s=(v||'').toLowerCase();
+  if(s.includes('tablet')||s.includes('ipad'))return'<span class="pill tablet"><i class="ti ti-device-tablet" style="font-size:10px"></i>Tablet</span>';
+  if(s.includes('laptop')||s.includes('pc')||s.includes('mac')||s.includes('windows'))return'<span class="pill laptop"><i class="ti ti-device-laptop" style="font-size:10px"></i>Laptop</span>';
+  if(s.includes('printer'))return'<span class="pill printer"><i class="ti ti-printer" style="font-size:10px"></i>Printer</span>';
+  return v||'—';
 }
 
-function devicePill(v) {
-  const s = (v||'').toLowerCase();
-  if (s.includes('tablet') || s.includes('ipad')) return '<span class="pill tablet"><i class="ti ti-device-tablet" style="font-size:10px"></i>Tablet</span>';
-  if (s.includes('laptop') || s.includes('pc') || s.includes('mac') || s.includes('windows') || s.includes('linux')) return '<span class="pill laptop"><i class="ti ti-device-laptop" style="font-size:10px"></i>Laptop</span>';
-  if (s.includes('printer')) return '<span class="pill printer"><i class="ti ti-printer" style="font-size:10px"></i>Printer</span>';
-  return v || '—';
+function batBar(v){
+  const p=parseInt(v)||0;
+  const c=p>=50?'#1D9E75':p>=20?'#EF9F27':'#E24B4A';
+  return`<div style="display:flex;align-items:center;gap:5px"><div class="mini-bar"><div class="mini-fill" style="width:${p}%;background:${c}"></div></div><span style="font-size:11px;color:#888">${p}%</span></div>`;
 }
 
-function batBar(v) {
-  const pct = parseInt(v) || 0;
-  const col = pct >= 50 ? '#1D9E75' : pct >= 20 ? '#EF9F27' : '#E24B4A';
-  return `<div style="display:flex;align-items:center;gap:5px"><div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${col}"></div></div><span style="font-size:11px;color:#888">${pct}%</span></div>`;
+function fmtDate(v){
+  if(!v)return'—';
+  try{return new Date(v).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return v;}
 }
 
-function fmtDate(v) {
-  if (!v) return '—';
-  try { return new Date(v).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}); } catch(e) { return v; }
-}
-
-function renderTable() {
-  const start = (PAGE - 1) * PAGE_SIZE;
-  const rows = FILTERED.slice(start, start + PAGE_SIZE);
-  const tbody = document.getElementById('table-body');
-
-  if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="12"><div class="state-box"><i class="ti ti-inbox"></i><p>${ALL_DATA.length === 0 ? 'Belum ada data. Klik Refresh untuk memuat dari Google Sheets.' : 'Tidak ada data yang cocok dengan filter yang dipilih.'}</p></div></td></tr>`;
-    document.getElementById('pagination').innerHTML = '';
+function renderTable(){
+  const start=(PAGE-1)*PAGE_SIZE;
+  const rows=FILTERED.slice(start,start+PAGE_SIZE);
+  const tbody=document.getElementById('tbody');
+  if(rows.length===0){
+    tbody.innerHTML=`<tr><td colspan="12"><div class="state-box"><i class="ti ti-inbox"></i><p>${ALL.length===0?'Belum ada data. Klik Refresh untuk memuat.':'Tidak ada data yang cocok dengan filter.'}</p></div></td></tr>`;
+    document.getElementById('pagination').innerHTML='';
     return;
   }
-
-  tbody.innerHTML = rows.map((d, i) => {
-    const gpsOk = d['GPS Status'] === 'ok';
-    const gpsPill = gpsOk
-      ? `<span class="pill gps-ok"><i class="ti ti-map-pin" style="font-size:9px"></i>OK</span>`
-      : `<span class="pill gps-warn"><i class="ti ti-alert-triangle" style="font-size:9px"></i>Verifikasi</span>`;
-    const fotoCount = parseInt(d['Foto Count']) || 0;
-    return `<tr onclick="openDrawer(${start + i})">
-      <td style="color:#888;font-size:11px;white-space:nowrap">${fmtDate(d['Timestamp'])}</td>
-      <td style="font-size:11px;color:#888">${d['No. Laporan']||'—'}</td>
-      <td><div style="font-weight:600;font-size:12px">${d['Nama']||'—'}</div><div style="font-size:10px;color:#888">${d['ID Karyawan']||''}</div></td>
-      <td style="font-size:11px;color:#888">${d['ID Karyawan']||'—'}</td>
-      <td style="font-size:11px">${d['Regional']||'—'}</td>
-      <td>${devicePill(d['Jenis Perangkat'])}</td>
-      <td><div style="font-size:12px;font-weight:500">${d['Merek']||'—'}</div><div style="font-size:10px;color:#888">${d['Model']||''}</div></td>
-      <td>${batBar(d['% Baterai'])}</td>
-      <td>${condPill(d['Kondisi Layar'])}</td>
-      <td>${overallPill(d._overall)}</td>
+  tbody.innerHTML=rows.map((d,i)=>{
+    const gpsOk=d.gps_status==='ok';
+    const gpsPill=gpsOk?'<span class="pill gps-ok"><i class="ti ti-map-pin" style="font-size:9px"></i>OK</span>':'<span class="pill gps-warn"><i class="ti ti-alert-triangle" style="font-size:9px"></i>Verifikasi</span>';
+    const fc=parseInt(d.foto_count)||0;
+    return`<tr onclick="openDrawer(${start+i})">
+      <td style="color:#888;font-size:11px;white-space:nowrap">${fmtDate(d.created_at)}</td>
+      <td style="font-size:11px;color:#888">${d.rpt_id||'—'}</td>
+      <td><div style="font-weight:600;font-size:12px">${d.nama||'—'}</div><div style="font-size:10px;color:#888">${d.employee_id||''}</div></td>
+      <td style="font-size:11px;color:#888">${d.employee_id||'—'}</td>
+      <td style="font-size:11px">${d.regional||'—'}</td>
+      <td>${devPill(d.jenis_perangkat)}</td>
+      <td><div style="font-size:12px;font-weight:500">${d.merek||'—'}</div><div style="font-size:10px;color:#888">${d.model||''}</div></td>
+      <td>${batBar(d.pct_baterai)}</td>
+      <td>${condPill(d.kondisi_layar)}</td>
+      <td>${condPill(d.kondisi_umum)}</td>
       <td>${gpsPill}</td>
-      <td><span style="font-size:11px;color:#888">${fotoCount > 0 ? fotoCount + ' foto' : '—'}</span></td>
+      <td style="font-size:11px;color:#888">${fc>0?fc+' foto':'—'}</td>
     </tr>`;
   }).join('');
-
-  renderPagination();
+  renderPag();
 }
 
-/* ── Pagination ── */
-function renderPagination() {
-  const total = Math.ceil(FILTERED.length / PAGE_SIZE);
-  if (total <= 1) { document.getElementById('pagination').innerHTML = ''; return; }
-  const start = (PAGE - 1) * PAGE_SIZE + 1;
-  const end = Math.min(PAGE * PAGE_SIZE, FILTERED.length);
-  let html = `<span class="pag-info">Menampilkan ${start}–${end} dari ${FILTERED.length} laporan</span><div class="pag-btns">`;
-  html += `<button class="pag-btn" onclick="goPage(${PAGE-1})" ${PAGE===1?'disabled':''}>‹</button>`;
-  for (let i = 1; i <= total; i++) {
-    if (total <= 7 || Math.abs(i - PAGE) <= 1 || i === 1 || i === total) {
-      html += `<button class="pag-btn ${i===PAGE?'active':''}" onclick="goPage(${i})">${i}</button>`;
-    } else if (Math.abs(i - PAGE) === 2) {
-      html += `<span style="padding:5px 4px;font-size:12px;color:#888">…</span>`;
-    }
+function renderPag(){
+  const total=Math.ceil(FILTERED.length/PAGE_SIZE);
+  if(total<=1){document.getElementById('pagination').innerHTML='';return;}
+  const s=(PAGE-1)*PAGE_SIZE+1,e=Math.min(PAGE*PAGE_SIZE,FILTERED.length);
+  let html=`<span class="pag-info">${s}–${e} dari ${FILTERED.length}</span><div class="pag-btns">`;
+  html+=`<button class="pag-btn" onclick="goPage(${PAGE-1})" ${PAGE===1?'disabled':''}>‹</button>`;
+  for(let i=1;i<=total;i++){
+    if(total<=7||Math.abs(i-PAGE)<=1||i===1||i===total)html+=`<button class="pag-btn ${i===PAGE?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    else if(Math.abs(i-PAGE)===2)html+=`<span style="padding:5px 2px;color:#888;font-size:12px">…</span>`;
   }
-  html += `<button class="pag-btn" onclick="goPage(${PAGE+1})" ${PAGE===total?'disabled':''}>›</button></div>`;
-  document.getElementById('pagination').innerHTML = html;
+  html+=`<button class="pag-btn" onclick="goPage(${PAGE+1})" ${PAGE===total?'disabled':''}>›</button></div>`;
+  document.getElementById('pagination').innerHTML=html;
 }
 
-function goPage(p) {
-  const total = Math.ceil(FILTERED.length / PAGE_SIZE);
-  if (p < 1 || p > total) return;
-  PAGE = p;
-  renderTable();
-  document.querySelector('.table-wrap').scrollIntoView({behavior:'smooth', block:'start'});
+function goPage(p){
+  const t=Math.ceil(FILTERED.length/PAGE_SIZE);
+  if(p<1||p>t)return;
+  PAGE=p;renderTable();
+  document.querySelector('.table-wrap').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-/* ── Drawer ── */
-function openDrawer(idx) {
-  const d = FILTERED[idx];
-  if (!d) return;
-  document.getElementById('drawer-title').textContent = d['Nama'] || 'Detail laporan';
-  const gpsStr = d['GPS Status'] === 'ok'
-    ? `${parseFloat(d['GPS Lat']||0).toFixed(4)}, ${parseFloat(d['GPS Lng']||0).toFixed(4)}`
-    : '⚠ Tidak tersedia — perlu verifikasi manual';
-
-  const rows = [
-    ['No. laporan', d['No. Laporan']||'—'],
-    ['Nama', d['Nama']||'—'],
-    ['ID Karyawan', d['ID Karyawan']||'—'],
-    ['Regional', d['Regional']||'—'],
-    ['Tanggal laporan', fmtDate(d['Timestamp'])],
-  ];
-  const device = [
-    ['Jenis perangkat', devicePill(d['Jenis Perangkat'])],
-    ['Sistem operasi', d['OS']||'—'],
-    ['Merek', d['Merek']||'—'],
-    ['Model', d['Model']||'—'],
-    ['Serial Number', `<code style="font-family:monospace;font-size:12px">${d['Serial Number']||'—'}</code>`],
-    ['IMEI', `<code style="font-family:monospace;font-size:12px">${d['IMEI']||'—'}</code>`],
-    ['RAM', d['RAM']||'—'],
-    ['CPU Cores', d['CPU Cores']||'—'],
-    ['Resolusi', d['Resolusi']||'—'],
-    ['Touch input', d['Touch']||'—'],
-  ];
-  const conds = [
-    ['Kondisi umum', overallPill(d._overall)],
-    ['Layar', condPill(d['Kondisi Layar'])],
-    ['Touchscreen', condPill(d['Touchscreen'])],
-    ['Casing', condPill(d['Casing'])],
-    ['Port / konektor', condPill(d['Port'])],
-    ['Tombol fisik', condPill(d['Tombol'])],
-    ['Baterai', `${batBar(d['% Baterai'])} ${condPill(d['Baterai'])}`],
-  ];
-  const meta = [
-    ['GPS', gpsStr],
-    ['Device Fingerprint', (d['Device FP']||'—')],
-    ['Foto diunggah', (d['Foto Count']||'0') + ' foto'],
-    ['Catatan', d['Catatan']||'—'],
-  ];
-
-  let html = rows.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val">${v}</span></div>`).join('');
-  html += `<div class="drawer-sec">Data perangkat</div>`;
-  html += device.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val">${v}</span></div>`).join('');
-  html += `<div class="drawer-sec">Kondisi fisik</div>`;
-  html += conds.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val">${v}</span></div>`).join('');
-  html += `<div class="drawer-sec">Verifikasi & catatan</div>`;
-  html += meta.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val" style="${l==='GPS'&&v.includes('⚠')?'color:#BA7517':''}; ${l==='Catatan'?'text-align:left;':''}${l==='Catatan'&&v==='—'?'color:#888':''}">${v}</span></div>`).join('');
-
-  document.getElementById('drawer-body').innerHTML = html;
+function openDrawer(idx){
+  const d=FILTERED[idx];if(!d)return;
+  document.getElementById('d-title').textContent=d.nama||'Detail laporan';
+  const gpsStr=d.gps_status==='ok'?`${parseFloat(d.gps_lat||0).toFixed(4)}, ${parseFloat(d.gps_lng||0).toFixed(4)}`:'⚠ Tidak tersedia — perlu verifikasi manual';
+  const rows=[['No. laporan',d.rpt_id||'—'],['Nama',d.nama||'—'],['ID Karyawan',d.employee_id||'—'],['Regional',d.regional||'—'],['Tgl laporan',fmtDate(d.created_at)]];
+  const device=[['Jenis perangkat',devPill(d.jenis_perangkat)],['OS',d.os||'—'],['Merek',d.merek||'—'],['Model',d.model||'—'],['Serial Number',`<code style="font-family:monospace;font-size:11px">${d.serial_number||'—'}</code>`],['IMEI',`<code style="font-family:monospace;font-size:11px">${d.imei||'—'}</code>`],['RAM',d.ram||'—'],['CPU Cores',d.cpu_cores||'—'],['Resolusi',d.resolusi||'—'],['Touch input',d.touch_input||'—']];
+  const conds=[['Kondisi umum',condPill(d.kondisi_umum)],['Layar',condPill(d.kondisi_layar)],['Touchscreen',condPill(d.kondisi_ts)],['Casing',condPill(d.kondisi_casing)],['Port',condPill(d.kondisi_port)],['Tombol',condPill(d.kondisi_tombol)],['Baterai',`${batBar(d.pct_baterai)} ${condPill(d.kondisi_baterai)}`]];
+  const meta=[['GPS',gpsStr],['Device FP',d.device_fp||'—'],['Foto',`${d.foto_count||0} foto`],['Catatan',d.catatan||'—']];
+  let html=rows.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val">${v}</span></div>`).join('');
+  html+=`<div class="drawer-sec">Data perangkat</div>`;
+  html+=device.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val">${v}</span></div>`).join('');
+  html+=`<div class="drawer-sec">Kondisi fisik</div>`;
+  html+=conds.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val">${v}</span></div>`).join('');
+  html+=`<div class="drawer-sec">Verifikasi & catatan</div>`;
+  html+=meta.map(([l,v])=>`<div class="dr"><span class="dr-lbl">${l}</span><span class="dr-val" style="${l==='GPS'&&v.includes('⚠')?'color:#BA7517':''};${l==='Catatan'?'text-align:left':''}">${v}</span></div>`).join('');
+  if(d.foto_imei_url||d.foto_sn_url){
+    html+=`<div class="drawer-sec">Link foto</div>`;
+    if(d.foto_imei_url)html+=`<div class="dr"><span class="dr-lbl">Foto IMEI</span><a href="${d.foto_imei_url}" target="_blank" style="color:#1D9E75;font-size:11px">Lihat foto</a></div>`;
+    if(d.foto_sn_url)html+=`<div class="dr"><span class="dr-lbl">Foto S/N</span><a href="${d.foto_sn_url}" target="_blank" style="color:#1D9E75;font-size:11px">Lihat foto</a></div>`;
+  }
+  document.getElementById('d-body').innerHTML=html;
   document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('d-overlay').classList.add('open');
 }
 
-function closeDrawer() {
+function closeDrawer(){
   document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('d-overlay').classList.remove('open');
 }
 
-/* ── Export CSV ── */
-function exportCSV() {
-  if (FILTERED.length === 0) { showToast('Tidak ada data untuk diexport', 'err'); return; }
-  const headers = ['No. Laporan','Timestamp','Nama','ID Karyawan','Regional','Jenis Perangkat','OS','Merek','Model','Serial Number','IMEI','RAM','CPU Cores','Resolusi','Touch','Kondisi Layar','Touchscreen','Casing','Port','Tombol','Baterai','% Baterai','Catatan','GPS Lat','GPS Lng','GPS Status','Device FP','Foto Count','Kondisi Umum'];
-  const rows = FILTERED.map(d => headers.map(h => {
-    const v = h === 'Kondisi Umum' ? d._overall : (d[h] || '');
-    return `"${String(v).replace(/"/g,'""')}"`;
-  }).join(','));
-  const csv = [headers.map(h=>`"${h}"`).join(','), ...rows].join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
-  a.download = `stock_opname_${new Date().toISOString().slice(0,10)}.csv`;
+function exportCSV(){
+  if(!FILTERED.length){showToast('Tidak ada data','err');return;}
+  const headers=['rpt_id','created_at','nama','employee_id','regional','jenis_perangkat','os','merek','model','serial_number','imei','ram','cpu_cores','resolusi','touch_input','kondisi_layar','kondisi_ts','kondisi_casing','kondisi_port','kondisi_tombol','kondisi_baterai','pct_baterai','kondisi_umum','catatan','gps_lat','gps_lng','gps_status','device_fp','foto_count'];
+  const rows=FILTERED.map(d=>headers.map(h=>`"${String(d[h]??'').replace(/"/g,'""')}"`).join(','));
+  const csv=[headers.map(h=>`"${h}"`).join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`stock_opname_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
-  showToast(`${FILTERED.length} laporan berhasil diexport`);
+  showToast(`${FILTERED.length} laporan diexport`);
 }
 
-/* ── Toast ── */
-function showToast(msg, type='ok') {
-  const t = document.getElementById('toast');
-  const icon = type === 'err' ? 'ti-alert-circle' : 'ti-check';
-  t.innerHTML = `<i class="ti ${icon}"></i><span>${msg}</span>`;
+function showToast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  const ic=type==='err'?'ti-alert-circle':'ti-check';
+  t.innerHTML=`<i class="ti ${ic}"></i><span>${msg}</span>`;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-/* ── Init ── */
 loadData();
 </script>
 </body>
