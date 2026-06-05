@@ -477,44 +477,58 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;color:#2C2C2
 
   <div class="sec-label"><span>Foto perangkat</span><div class="sec-line"></div></div>
 
-  <div class="guide-banner">
-    <div class="guide-title"><i class="ti ti-camera"></i>Panduan foto wajib</div>
-    <div class="guide-row"><div class="gnum">1</div><span>Foto layar yang menampilkan <strong>IMEI</strong> — tekan <code>*#06#</code> lalu foto layarnya</span></div>
+
+  <!-- Panduan foto dinamis -->
+  <div id="foto-panduan-tablet" class="guide-banner" style="display:none">
+    <div class="guide-title"><i class="ti ti-camera"></i>Panduan foto wajib — Tablet</div>
+    <div class="guide-row"><div class="gnum">1</div><span>Foto layar menampilkan <strong>IMEI</strong> — tekan <code>*#06#</code> lalu foto layar</span></div>
     <div class="guide-row"><div class="gnum">2</div><span>Foto label <strong>Serial Number</strong> di badan atau belakang perangkat</span></div>
-    <div class="guide-row"><div class="gnum">+</div><span>Foto kondisi fisik tambahan — depan, belakang, bagian yang rusak</span></div>
+    <div class="guide-row"><div class="gnum">+</div><span>Foto kondisi fisik tambahan (opsional)</span></div>
+  </div>
+  <div id="foto-panduan-lain" class="guide-banner" style="display:none">
+    <div class="guide-title"><i class="ti ti-camera"></i>Panduan foto wajib — Laptop / Printer</div>
+    <div class="guide-row"><div class="gnum">1</div><span>Foto label <strong>Serial Number</strong> di badan atau bawah perangkat</span></div>
+    <div class="guide-row"><div class="gnum">+</div><span>Foto kondisi fisik tambahan (opsional)</span></div>
   </div>
 
   <div class="card">
     <div class="ch">
       <div class="ci blue"><i class="ti ti-camera"></i></div>
-      <div><div class="ct">Upload foto</div><div class="cs">Foto IMEI dan Serial Number wajib diunggah</div></div>
+      <div><div class="ct">Upload foto</div><div class="cs" id="foto-card-sub">Foto wajib sesuai jenis perangkat</div></div>
     </div>
-    <div class="slots">
+
+    <!-- Slot IMEI — hanya tampil untuk tablet -->
+    <div id="slot-imei-wrap" style="display:none;margin-bottom:8px">
       <div class="slot" id="slot-imei" onclick="document.getElementById('ph-imei').click()">
         <i class="ti ti-device-mobile slot-icon"></i>
-        <div class="slot-title">Foto IMEI</div>
-        <div class="slot-sub">Tekan *#06# lalu foto layar</div>
+        <div class="slot-title">Foto IMEI <span style="color:#E24B4A;font-size:10px">*</span></div>
+        <div class="slot-sub" id="slot-imei-sub">Tekan *#06# lalu foto layar yang menampilkan IMEI</div>
         <img class="slot-thumb" id="thumb-imei" alt="foto imei">
         <div class="slot-ok"><i class="ti ti-circle-check"></i>Terunggah</div>
       </div>
+    </div>
+
+    <!-- Slot Serial Number — selalu tampil -->
+    <div id="slot-sn-wrap" style="margin-bottom:12px">
       <div class="slot" id="slot-sn" onclick="document.getElementById('ph-sn').click()">
         <i class="ti ti-qrcode slot-icon"></i>
-        <div class="slot-title">Foto Serial Number</div>
-        <div class="slot-sub">Label di badan perangkat</div>
+        <div class="slot-title">Foto Serial Number <span style="color:#E24B4A;font-size:10px">*</span></div>
+        <div class="slot-sub" id="slot-sn-sub">Foto label S/N di badan atau belakang perangkat</div>
         <img class="slot-thumb" id="thumb-sn" alt="foto serial number">
         <div class="slot-ok"><i class="ti ti-circle-check"></i>Terunggah</div>
       </div>
     </div>
+
     <div class="extra-drop" onclick="document.getElementById('ph-extra').click()">
       <i class="ti ti-photo-up" style="font-size:20px;color:#888;display:block;margin-bottom:3px"></i>
-      <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:1px">Foto kondisi fisik tambahan</div>
+      <div style="font-size:12px;font-weight:600;color:#888;margin-bottom:1px">Foto kondisi fisik tambahan (opsional)</div>
       <div style="font-size:11px;color:#aaa">Depan, belakang, bagian yang rusak — maks. 4 foto</div>
     </div>
     <input type="file" id="ph-imei" accept="image/*" style="display:none" onchange="loadSlot(this,'imei')">
     <input type="file" id="ph-sn" accept="image/*" style="display:none" onchange="loadSlot(this,'sn')">
     <input type="file" id="ph-extra" accept="image/*" multiple style="display:none" onchange="loadExtra(this)">
     <div class="extra-strip" id="extra-strip"></div>
-    <div class="em" id="em-photo"><i class="ti ti-alert-circle"></i>Foto IMEI dan Serial Number wajib diunggah</div>
+    <div class="em" id="em-photo"><i class="ti ti-alert-circle"></i>Foto wajib belum diunggah</div>
   </div>
 
   <div class="sec-label" style="margin-top:20px"><span>Ringkasan laporan</span><div class="sec-line"></div></div>
@@ -739,6 +753,29 @@ function loadExtra(input){
 }
 
 /* ── Summary ── */
+function setupFotoSlots(){
+  const dtype=($('f-dtype').value||'').toLowerCase();
+  const isTablet=dtype.includes('tablet')||dtype.includes('ipad');
+
+  // Show/hide IMEI slot
+  $('slot-imei-wrap').style.display=isTablet?'block':'none';
+
+  // Show correct panduan
+  $('foto-panduan-tablet').style.display=isTablet?'block':'none';
+  $('foto-panduan-lain').style.display=isTablet?'none':'block';
+
+  // Update card subtitle
+  const sub=$('foto-card-sub');
+  if(sub) sub.textContent=isTablet?'Wajib: foto IMEI + Serial Number':'Wajib: foto Serial Number';
+
+  // Reset IMEI photo if switching from tablet to non-tablet
+  if(!isTablet){
+    PH.imei=null;
+    const slotImei=$('slot-imei');
+    if(slotImei) slotImei.classList.remove('filled');
+  }
+}
+
 function cpill(v){const m={b:['b','Baik'],s:['s','Perlu perhatian'],r:['r','Perlu penggantian']};const[cls,lbl]=(m[v]||['','—']);return cls?`<span class="cpill ${cls}">${lbl}</span>`:'<span style="color:#888">—</span>';}
 
 function buildSummary(){
@@ -758,13 +795,16 @@ function buildSummary(){
   const conds=[['Layar','layar'],['Touchscreen','ts'],['Casing','casing'],['Port','port'],['Tombol','btn'],['Baterai','bat']];
   let html=rows.map(([l,v])=>`<div class="sum-row"><span class="sum-lbl">${l}</span><span class="sum-val">${v}</span></div>`).join('');
   html+=conds.map(([l,k])=>`<div class="sum-row"><span class="sum-lbl">${l}</span><span class="sum-val">${cpill(COND[k])}</span></div>`).join('');
+  const isTabletSum=($('f-dtype').value||'').toLowerCase().includes('tablet')||($('f-dtype').value||'').toLowerCase().includes('ipad');
   html+=`<div class="sum-row"><span class="sum-lbl">Foto</span><span class="sum-val">${photoCount} foto${PH.imei?' <i class="ti ti-device-mobile" style="font-size:10px;color:#1D9E75"></i>':''}${PH.sn?' <i class="ti ti-qrcode" style="font-size:10px;color:#1D9E75"></i>':''}</span></div>`;
   $('summary').innerHTML=html;
 }
 
 /* ── Submit ── */
 async function submit(){
-  if(!PH.imei||!PH.sn){showE('em-photo',true);$('slot-imei').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  const isTabletSubmit=($('f-dtype').value||'').toLowerCase().includes('tablet')||($('f-dtype').value||'').toLowerCase().includes('ipad');
+  const photoOk=isTabletSubmit?(PH.imei&&PH.sn):PH.sn;
+  if(!photoOk){showE('em-photo',true);$('slot-sn').scrollIntoView({behavior:'smooth',block:'center'});return;}
   const btn=$('btn-kirim');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Mengirim...';
   try{
     const rptId='RPT-MTI-'+Date.now().toString().slice(-6);
