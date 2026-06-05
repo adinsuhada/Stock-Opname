@@ -263,39 +263,29 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;color:#2C2C2
         <div class="em" id="em-eid"><i class="ti ti-alert-circle"></i>Wajib diisi, angka saja</div>
       </div>
     </div>
-    <div class="g2">
-      <div class="f">
-        <label>Regional <span class="req">*</span></label>
-        <select id="f-reg">
-          <option value="">-- Pilih regional --</option>
-          <option value="Metro">Metro</option>
-          <option value="Jabar - Banten">Jabar - Banten</option>
-          <option value="Jawa - Bali">Jawa - Bali</option>
-          <option value="Sumatera">Sumatera</option>
-          <option value="Kalsulpap">Kalsulpap</option>
-          <option value="Telesales">Telesales</option>
-          <option value="Telesales Malang">Telesales Malang</option>
-        </select>
-        <div class="em" id="em-reg"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
-      </div>
-      <div class="f">
-        <label>Divisi <span class="req">*</span></label>
-        <select id="f-divisi">
-          <option value="">-- Pilih divisi --</option>
-          <option value="Sales">Sales</option>
-          <option value="General Affair">General Affair</option>
-          <option value="Finance">Finance</option>
-          <option value="Human Resources">Human Resources</option>
-          <option value="Operations">Operations</option>
-          <option value="Technology">Technology</option>
-          <option value="Marketing">Marketing</option>
-          <option value="Customer Success">Customer Success</option>
-          <option value="Legal">Legal</option>
-          <option value="Product">Product</option>
-        </select>
-        <div class="em" id="em-divisi"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
-      </div>
+    <!-- Cascading: Divisi → Sub Divisi → Regional -->
+    <div class="f">
+      <label>Divisi <span class="req">*</span></label>
+      <select id="f-divisi" onchange="onDivisiChange()">
+        <option value="">-- Pilih divisi --</option>
+      </select>
+      <div class="em" id="em-divisi"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
     </div>
+    <div class="f" id="wrap-subdiv" style="display:none">
+      <label>Sub Divisi <span class="req">*</span></label>
+      <select id="f-subdiv" onchange="onSubdivChange()">
+        <option value="">-- Pilih sub divisi --</option>
+      </select>
+      <div class="em" id="em-subdiv"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+    <div class="f" id="wrap-reg" style="display:none">
+      <label>Regional <span class="req">*</span></label>
+      <select id="f-reg">
+        <option value="">-- Pilih regional --</option>
+      </select>
+      <div class="em" id="em-reg"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    </div>
+  </div>
   </div>
 
   <div class="card">
@@ -591,6 +581,117 @@ const PH={imei:null,sn:null,extra:[]};
 let GPS={status:'idle',lat:null,lng:null};
 let FP='';
 let RPT_ID='RPT-MTI-'+Date.now().toString().slice(-6);
+let ORG_DATA=[];
+
+// Load struktur organisasi dari Supabase
+async function loadOrgData(){
+  try {
+    const res=await fetch(
+      SUPA_URL+'/rest/v1/struktur_organisasi?select=divisi,sub_divisi,regional&aktif=eq.true&order=urutan,divisi,sub_divisi,regional',
+      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
+    );
+    if(res.ok){
+      ORG_DATA=await res.json();
+      populateDivisi();
+    }
+  } catch(e){
+    console.warn('loadOrgData error:',e);
+    // Fallback hardcoded
+    ORG_DATA=[
+      {divisi:'Growth & Marketing',sub_divisi:'Marketing',regional:null},
+      {divisi:'Growth & Marketing',sub_divisi:'SPS',regional:null},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Metro'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Jabar - Banten'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Jawa - Bali'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Sumatera'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Kalsulpap'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Telesales'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Telesales Malang'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Sales Fulfillment'},
+      {divisi:'Growth & Marketing',sub_divisi:'Sales',regional:'Sales Trainer'},
+      {divisi:'People',sub_divisi:null,regional:null},
+      {divisi:'Product',sub_divisi:null,regional:null},
+      {divisi:'Engineering',sub_divisi:null,regional:null},
+      {divisi:'Finance',sub_divisi:null,regional:null},
+      {divisi:'Customer Experience',sub_divisi:'Customer Care',regional:null},
+      {divisi:'Customer Experience',sub_divisi:'Customer Life Cycle Management',regional:null},
+      {divisi:'Customer Experience',sub_divisi:'TAC',regional:null},
+      {divisi:'Customer Experience',sub_divisi:'Customer Support',regional:null},
+      {divisi:'Customer Experience',sub_divisi:'Customer Enablement',regional:null},
+      {divisi:'Business Solution',sub_divisi:null,regional:null},
+      {divisi:'Board of Director',sub_divisi:null,regional:null},
+    ];
+    populateDivisi();
+  }
+}
+
+function populateDivisi(){
+  const sel=$('f-divisi');
+  const divisis=[...new Set(ORG_DATA.map(d=>d.divisi))];
+  sel.innerHTML='<option value="">-- Pilih divisi --</option>';
+  divisis.forEach(d=>{
+    const opt=document.createElement('option');
+    opt.value=d;opt.textContent=d;
+    sel.appendChild(opt);
+  });
+}
+
+function onDivisiChange(){
+  const divisi=$('f-divisi').value;
+  const subdiv=$('f-subdiv');
+  const wrapSub=$('wrap-subdiv');
+  const wrapReg=$('wrap-reg');
+  const reg=$('f-reg');
+
+  // Reset sub & regional
+  subdiv.innerHTML='<option value="">-- Pilih sub divisi --</option>';
+  reg.innerHTML='<option value="">-- Pilih regional --</option>';
+  wrapSub.style.display='none';
+  wrapReg.style.display='none';
+
+  if(!divisi) return;
+
+  const rows=ORG_DATA.filter(d=>d.divisi===divisi);
+  const hasSub=rows.some(d=>d.sub_divisi);
+
+  if(hasSub){
+    const subs=[...new Set(rows.map(d=>d.sub_divisi).filter(Boolean))];
+    subs.forEach(s=>{
+      const opt=document.createElement('option');
+      opt.value=s;opt.textContent=s;
+      subdiv.appendChild(opt);
+    });
+    wrapSub.style.display='block';
+  } else {
+    // Divisi tanpa sub divisi — langsung selesai
+    wrapSub.style.display='none';
+    wrapReg.style.display='none';
+  }
+}
+
+function onSubdivChange(){
+  const divisi=$('f-divisi').value;
+  const subdiv=$('f-subdiv').value;
+  const reg=$('f-reg');
+  const wrapReg=$('wrap-reg');
+
+  reg.innerHTML='<option value="">-- Pilih regional --</option>';
+  wrapReg.style.display='none';
+
+  if(!subdiv) return;
+
+  const rows=ORG_DATA.filter(d=>d.divisi===divisi&&d.sub_divisi===subdiv);
+  const hasReg=rows.some(d=>d.regional);
+
+  if(hasReg){
+    rows.filter(d=>d.regional).forEach(d=>{
+      const opt=document.createElement('option');
+      opt.value=d.regional;opt.textContent=d.regional;
+      reg.appendChild(opt);
+    });
+    wrapReg.style.display='block';
+  }
+}
 
 function $(id){return document.getElementById(id)}
 
@@ -626,12 +727,25 @@ function validateStep1(){
   const eidok=eid.length>0&&/^\d+$/.test(eid);
   $('pw-eid').classList.toggle('err',!eidok);
   showE('em-eid',!eidok);if(!eidok)ok=false;
-  const reg=$('f-reg').value;
-  $('f-reg').classList.toggle('err',!reg);
-  showE('em-reg',!reg);if(!reg)ok=false;
   const divisi=$('f-divisi').value;
   $('f-divisi').classList.toggle('err',!divisi);
   showE('em-divisi',!divisi);if(!divisi)ok=false;
+
+  // Sub divisi — hanya wajib jika ditampilkan
+  const wrapSub=$('wrap-subdiv');
+  if(wrapSub&&wrapSub.style.display!=='none'){
+    const subdiv=$('f-subdiv').value;
+    $('f-subdiv').classList.toggle('err',!subdiv);
+    showE('em-subdiv',!subdiv);if(!subdiv)ok=false;
+  }
+
+  // Regional — hanya wajib jika ditampilkan
+  const wrapReg=$('wrap-reg');
+  if(wrapReg&&wrapReg.style.display!=='none'){
+    const reg=$('f-reg').value;
+    $('f-reg').classList.toggle('err',!reg);
+    showE('em-reg',!reg);if(!reg)ok=false;
+  }
   if(!ok)window.scrollTo({top:0,behavior:'smooth'});
   return ok;
 }
@@ -873,8 +987,9 @@ function buildSummary(){
   const rows=[
     ['Nama',$('f-nama').value||'—'],
     ['ID Karyawan','MTI-'+($('f-eid').value||'—')],
-    ['Regional',$('f-reg').value||'—'],
     ['Divisi',$('f-divisi').value||'—'],
+    ['Sub Divisi',$('f-subdiv')&&$('wrap-subdiv').style.display!=='none'?$('f-subdiv').value||'—':'—'],
+    ['Regional',$('f-reg')&&$('wrap-reg').style.display!=='none'?$('f-reg').value||'—':'—'],
     ['Jenis perangkat',$('f-dtype').value||'—'],
     ['Merek',$('f-brand').value||'—'],
     ['Model',$('f-model').value||'—'],
@@ -905,8 +1020,9 @@ async function submit(){
       rptId,
       nama:$('f-nama').value,
       eid:'MTI-'+$('f-eid').value,
-      regional:$('f-reg').value,
       divisi:$('f-divisi').value,
+      subDivisi:$('wrap-subdiv')&&$('wrap-subdiv').style.display!=='none'?$('f-subdiv').value:'',
+      regional:$('wrap-reg')&&$('wrap-reg').style.display!=='none'?$('f-reg').value:'',
       dtype:$('f-dtype').value,
       os:$('f-os').value,
       brand:$('f-brand').value,
@@ -940,8 +1056,9 @@ async function submit(){
         rpt_id: payload.rptId,
         nama: payload.nama,
         employee_id: payload.eid,
-        regional: payload.regional,
         divisi: payload.divisi,
+        sub_divisi: payload.subDivisi||null,
+        regional: payload.regional||null,
         jenis_perangkat: payload.dtype,
         os: payload.os,
         merek: payload.brand,
@@ -988,8 +1105,9 @@ async function submit(){
       ['No. laporan',rptId],
       ['Nama',$('f-nama').value],
       ['ID Karyawan','MTI-'+$('f-eid').value],
-      ['Regional',$('f-reg').value],
       ['Divisi',$('f-divisi').value],
+      ['Sub Divisi',$('wrap-subdiv')&&$('wrap-subdiv').style.display!=='none'?$('f-subdiv').value:'—'],
+      ['Regional',$('wrap-reg')&&$('wrap-reg').style.display!=='none'?$('f-reg').value:'—'],
       ['Perangkat',$('f-brand').value+' '+$('f-model').value],
       ['Serial Number',$('f-sn').value],
       ['IMEI',$('f-imei').value],

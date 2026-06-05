@@ -137,16 +137,25 @@ tr:hover td{background:#fafaf8;cursor:pointer}
     </select>
     <select id="f-divisi" onchange="applyFilters()">
       <option value="">Semua divisi</option>
-      <option value="Sales">Sales</option>
-      <option value="General Affair">General Affair</option>
-      <option value="Finance">Finance</option>
-      <option value="Human Resources">Human Resources</option>
-      <option value="Operations">Operations</option>
-      <option value="Technology">Technology</option>
-      <option value="Marketing">Marketing</option>
-      <option value="Customer Success">Customer Success</option>
-      <option value="Legal">Legal</option>
+      <option value="Growth & Marketing">Growth & Marketing</option>
+      <option value="People">People</option>
       <option value="Product">Product</option>
+      <option value="Engineering">Engineering</option>
+      <option value="Finance">Finance</option>
+      <option value="Customer Experience">Customer Experience</option>
+      <option value="Business Solution">Business Solution</option>
+      <option value="Board of Director">Board of Director</option>
+    </select>
+    <select id="f-subdiv" onchange="applyFilters()">
+      <option value="">Semua sub divisi</option>
+      <option value="Marketing">Marketing</option>
+      <option value="SPS">SPS</option>
+      <option value="Sales">Sales</option>
+      <option value="Customer Care">Customer Care</option>
+      <option value="Customer Life Cycle Management">CLCM</option>
+      <option value="TAC">TAC</option>
+      <option value="Customer Support">Customer Support</option>
+      <option value="Customer Enablement">Customer Enablement</option>
     </select>
     <select id="f-gps" onchange="applyFilters()">
       <option value="">Semua GPS</option>
@@ -245,6 +254,7 @@ function applyFilters(){
   const d=document.getElementById('f-dev').value.toLowerCase();
   const k=document.getElementById('f-kond').value;
   const dv=document.getElementById('f-divisi').value;
+  const sdv=document.getElementById('f-subdiv').value;
   const g=document.getElementById('f-gps').value;
   FILTERED=ALL.filter(row=>{
     const ms=!s||(row.nama||'').toLowerCase().includes(s)||(row.employee_id||'').toLowerCase().includes(s)||(row.merek||'').toLowerCase().includes(s)||(row.model||'').toLowerCase().includes(s)||(row.imei||'').includes(s)||(row.serial_number||'').toLowerCase().includes(s)||(row.rpt_id||'').toLowerCase().includes(s);
@@ -252,8 +262,9 @@ function applyFilters(){
     const md=!d||(row.jenis_perangkat||'').toLowerCase().includes(d);
     const mk=!k||row.kondisi_umum===k;
     const mdv=!dv||row.divisi===dv;
+    const msdv=!sdv||row.sub_divisi===sdv;
     const mg=!g||(g==='ok'?row.gps_status==='ok':row.gps_status!=='ok');
-    return ms&&mr&&md&&mk&&mdv&&mg;
+    return ms&&mr&&md&&mk&&mdv&&msdv&&mg;
   });
   document.getElementById('f-count').textContent=FILTERED.length+' laporan';
   PAGE=1;
@@ -261,7 +272,7 @@ function applyFilters(){
 }
 
 function clearFilters(){
-  ['f-search','f-reg','f-dev','f-kond','f-divisi','f-gps'].forEach(id=>{
+  ['f-search','f-reg','f-dev','f-kond','f-divisi','f-subdiv','f-gps'].forEach(id=>{
     const el=document.getElementById(id);
     el.value='';
   });
@@ -410,7 +421,7 @@ function closeDrawer(){
 
 function exportCSV(){
   if(!FILTERED.length){showToast('Tidak ada data','err');return;}
-  const headers=['rpt_id','created_at','nama','employee_id','regional','divisi','jenis_perangkat','os','merek','model','serial_number','imei','ram','cpu_cores','resolusi','touch_input','kondisi_layar','kondisi_ts','kondisi_casing','kondisi_port','kondisi_tombol','kondisi_baterai','pct_baterai','kondisi_umum','catatan','gps_lat','gps_lng','gps_status','device_fp','foto_count'];
+  const headers=['rpt_id','created_at','nama','employee_id','divisi','sub_divisi','regional','jenis_perangkat','os','merek','model','serial_number','imei','ram','cpu_cores','resolusi','touch_input','kondisi_layar','kondisi_ts','kondisi_casing','kondisi_port','kondisi_tombol','kondisi_baterai','pct_baterai','kondisi_umum','catatan','gps_lat','gps_lng','gps_status','device_fp','foto_count'];
   const rows=FILTERED.map(d=>headers.map(h=>`"${String(d[h]??'').replace(/"/g,'""')}"`).join(','));
   const csv=[headers.map(h=>`"${h}"`).join(','),...rows].join('\n');
   const a=document.createElement('a');
