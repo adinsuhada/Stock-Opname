@@ -263,19 +263,38 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f3;color:#2C2C2
         <div class="em" id="em-eid"><i class="ti ti-alert-circle"></i>Wajib diisi, angka saja</div>
       </div>
     </div>
-    <div class="f">
-      <label>Regional <span class="req">*</span></label>
-      <select id="f-reg">
-        <option value="">-- Pilih regional --</option>
-        <option value="Metro">Metro</option>
-        <option value="Jabar - Banten">Jabar - Banten</option>
-        <option value="Jawa - Bali">Jawa - Bali</option>
-        <option value="Sumatera">Sumatera</option>
-        <option value="Kalsulpap">Kalsulpap</option>
-        <option value="Telesales">Telesales</option>
-        <option value="Telesales Malang">Telesales Malang</option>
-      </select>
-      <div class="em" id="em-reg"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+    <div class="g2">
+      <div class="f">
+        <label>Regional <span class="req">*</span></label>
+        <select id="f-reg">
+          <option value="">-- Pilih regional --</option>
+          <option value="Metro">Metro</option>
+          <option value="Jabar - Banten">Jabar - Banten</option>
+          <option value="Jawa - Bali">Jawa - Bali</option>
+          <option value="Sumatera">Sumatera</option>
+          <option value="Kalsulpap">Kalsulpap</option>
+          <option value="Telesales">Telesales</option>
+          <option value="Telesales Malang">Telesales Malang</option>
+        </select>
+        <div class="em" id="em-reg"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+      </div>
+      <div class="f">
+        <label>Divisi <span class="req">*</span></label>
+        <select id="f-divisi">
+          <option value="">-- Pilih divisi --</option>
+          <option value="Sales">Sales</option>
+          <option value="General Affair">General Affair</option>
+          <option value="Finance">Finance</option>
+          <option value="Human Resources">Human Resources</option>
+          <option value="Operations">Operations</option>
+          <option value="Technology">Technology</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Customer Success">Customer Success</option>
+          <option value="Legal">Legal</option>
+          <option value="Product">Product</option>
+        </select>
+        <div class="em" id="em-divisi"><i class="ti ti-alert-circle"></i>Wajib dipilih</div>
+      </div>
     </div>
   </div>
 
@@ -571,6 +590,7 @@ const COND_FIELDS=['layar','ts','casing','port','btn','bat'];
 const PH={imei:null,sn:null,extra:[]};
 let GPS={status:'idle',lat:null,lng:null};
 let FP='';
+let RPT_ID='RPT-MTI-'+Date.now().toString().slice(-6);
 
 function $(id){return document.getElementById(id)}
 
@@ -609,6 +629,9 @@ function validateStep1(){
   const reg=$('f-reg').value;
   $('f-reg').classList.toggle('err',!reg);
   showE('em-reg',!reg);if(!reg)ok=false;
+  const divisi=$('f-divisi').value;
+  $('f-divisi').classList.toggle('err',!divisi);
+  showE('em-divisi',!divisi);if(!divisi)ok=false;
   if(!ok)window.scrollTo({top:0,behavior:'smooth'});
   return ok;
 }
@@ -736,9 +759,8 @@ async function loadSlot(input,slot){
 
   // Upload to Supabase Storage
   try {
-    const rptId='RPT-MTI-'+Date.now().toString().slice(-6);
     const ext=f.name.split('.').pop()||'jpg';
-    const path=`${rptId}/${slot}_${Date.now()}.${ext}`;
+    const path=`${RPT_ID}/${slot}_${Date.now()}.${ext}`;
 
     const res=await fetch(
       SUPA_URL+'/storage/v1/object/foto-asset/'+path,
@@ -852,6 +874,7 @@ function buildSummary(){
     ['Nama',$('f-nama').value||'—'],
     ['ID Karyawan','MTI-'+($('f-eid').value||'—')],
     ['Regional',$('f-reg').value||'—'],
+    ['Divisi',$('f-divisi').value||'—'],
     ['Jenis perangkat',$('f-dtype').value||'—'],
     ['Merek',$('f-brand').value||'—'],
     ['Model',$('f-model').value||'—'],
@@ -874,7 +897,7 @@ async function submit(){
   if(!photoOk){showE('em-photo',true);$('slot-sn').scrollIntoView({behavior:'smooth',block:'center'});return;}
   const btn=$('btn-kirim');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Mengirim...';
   try{
-    const rptId='RPT-MTI-'+Date.now().toString().slice(-6);
+    const rptId=RPT_ID; // Gunakan ID yang sama dengan yang dipakai saat upload foto
     const total=[PH.imei,PH.sn,...PH.extra].filter(Boolean).length;
     const gpsStr=GPS.status==='ok'?GPS.lat.toFixed(5)+', '+GPS.lng.toFixed(5):'⚠ Tidak tersedia — perlu verifikasi manual';
     // Push to Google Sheets
@@ -883,6 +906,7 @@ async function submit(){
       nama:$('f-nama').value,
       eid:'MTI-'+$('f-eid').value,
       regional:$('f-reg').value,
+      divisi:$('f-divisi').value,
       dtype:$('f-dtype').value,
       os:$('f-os').value,
       brand:$('f-brand').value,
@@ -917,6 +941,7 @@ async function submit(){
         nama: payload.nama,
         employee_id: payload.eid,
         regional: payload.regional,
+        divisi: payload.divisi,
         jenis_perangkat: payload.dtype,
         os: payload.os,
         merek: payload.brand,
@@ -964,6 +989,7 @@ async function submit(){
       ['Nama',$('f-nama').value],
       ['ID Karyawan','MTI-'+$('f-eid').value],
       ['Regional',$('f-reg').value],
+      ['Divisi',$('f-divisi').value],
       ['Perangkat',$('f-brand').value+' '+$('f-model').value],
       ['Serial Number',$('f-sn').value],
       ['IMEI',$('f-imei').value],

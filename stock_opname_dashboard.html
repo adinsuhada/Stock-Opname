@@ -135,6 +135,19 @@ tr:hover td{background:#fafaf8;cursor:pointer}
       <option value="Perlu Perhatian">Perlu perhatian</option>
       <option value="Perlu Penggantian">Perlu penggantian</option>
     </select>
+    <select id="f-divisi" onchange="applyFilters()">
+      <option value="">Semua divisi</option>
+      <option value="Sales">Sales</option>
+      <option value="General Affair">General Affair</option>
+      <option value="Finance">Finance</option>
+      <option value="Human Resources">Human Resources</option>
+      <option value="Operations">Operations</option>
+      <option value="Technology">Technology</option>
+      <option value="Marketing">Marketing</option>
+      <option value="Customer Success">Customer Success</option>
+      <option value="Legal">Legal</option>
+      <option value="Product">Product</option>
+    </select>
     <select id="f-gps" onchange="applyFilters()">
       <option value="">Semua GPS</option>
       <option value="ok">GPS terverifikasi</option>
@@ -231,14 +244,16 @@ function applyFilters(){
   const r=document.getElementById('f-reg').value;
   const d=document.getElementById('f-dev').value.toLowerCase();
   const k=document.getElementById('f-kond').value;
+  const dv=document.getElementById('f-divisi').value;
   const g=document.getElementById('f-gps').value;
   FILTERED=ALL.filter(row=>{
     const ms=!s||(row.nama||'').toLowerCase().includes(s)||(row.employee_id||'').toLowerCase().includes(s)||(row.merek||'').toLowerCase().includes(s)||(row.model||'').toLowerCase().includes(s)||(row.imei||'').includes(s)||(row.serial_number||'').toLowerCase().includes(s)||(row.rpt_id||'').toLowerCase().includes(s);
     const mr=!r||row.regional===r;
     const md=!d||(row.jenis_perangkat||'').toLowerCase().includes(d);
     const mk=!k||row.kondisi_umum===k;
+    const mdv=!dv||row.divisi===dv;
     const mg=!g||(g==='ok'?row.gps_status==='ok':row.gps_status!=='ok');
-    return ms&&mr&&md&&mk&&mg;
+    return ms&&mr&&md&&mk&&mdv&&mg;
   });
   document.getElementById('f-count').textContent=FILTERED.length+' laporan';
   PAGE=1;
@@ -246,7 +261,7 @@ function applyFilters(){
 }
 
 function clearFilters(){
-  ['f-search','f-reg','f-dev','f-kond','f-gps'].forEach(id=>{
+  ['f-search','f-reg','f-dev','f-kond','f-divisi','f-gps'].forEach(id=>{
     const el=document.getElementById(id);
     el.value='';
   });
@@ -395,7 +410,7 @@ function closeDrawer(){
 
 function exportCSV(){
   if(!FILTERED.length){showToast('Tidak ada data','err');return;}
-  const headers=['rpt_id','created_at','nama','employee_id','regional','jenis_perangkat','os','merek','model','serial_number','imei','ram','cpu_cores','resolusi','touch_input','kondisi_layar','kondisi_ts','kondisi_casing','kondisi_port','kondisi_tombol','kondisi_baterai','pct_baterai','kondisi_umum','catatan','gps_lat','gps_lng','gps_status','device_fp','foto_count'];
+  const headers=['rpt_id','created_at','nama','employee_id','regional','divisi','jenis_perangkat','os','merek','model','serial_number','imei','ram','cpu_cores','resolusi','touch_input','kondisi_layar','kondisi_ts','kondisi_casing','kondisi_port','kondisi_tombol','kondisi_baterai','pct_baterai','kondisi_umum','catatan','gps_lat','gps_lng','gps_status','device_fp','foto_count'];
   const rows=FILTERED.map(d=>headers.map(h=>`"${String(d[h]??'').replace(/"/g,'""')}"`).join(','));
   const csv=[headers.map(h=>`"${h}"`).join(','),...rows].join('\n');
   const a=document.createElement('a');
