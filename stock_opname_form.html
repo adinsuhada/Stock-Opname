@@ -724,32 +724,99 @@ function updBat(v){
 }
 
 /* ── Photos ── */
-function loadSlot(input,slot){
+async function loadSlot(input,slot){
   const f=input.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    PH[slot]=e.target.result;
-    $('slot-'+slot).classList.add('filled');
-    $('thumb-'+slot).src=e.target.result;
-    hideE('em-photo');buildSummary();
-  };
-  r.readAsDataURL(f);
+  const slotEl=$('slot-'+slot);
+  const thumb=$('thumb-'+slot);
+
+  // Show preview immediately
+  const reader=new FileReader();
+  reader.onload=e=>{thumb.src=e.target.result;};
+  reader.readAsDataURL(f);
+
+  // Upload to Supabase Storage
+  try {
+    const rptId='RPT-MTI-'+Date.now().toString().slice(-6);
+    const ext=f.name.split('.').pop()||'jpg';
+    const path=`${rptId}/${slot}_${Date.now()}.${ext}`;
+
+    const res=await fetch(
+      SUPA_URL+'/storage/v1/object/foto-asset/'+path,
+      {
+        method:'POST',
+        headers:{
+          'apikey':SUPA_KEY,
+          'Authorization':'Bearer '+SUPA_KEY,
+          'Content-Type':f.type||'image/jpeg',
+          'x-upsert':'true'
+        },
+        body:f
+      }
+    );
+
+    if(res.ok){
+      const publicUrl=SUPA_URL+'/storage/v1/object/public/foto-asset/'+path;
+      PH[slot]=publicUrl;
+    } else {
+      const err=await res.text();
+      console.warn('Upload error:',err);
+      // Fallback: store as base64
+      PH[slot]='pending_upload';
+    }
+  } catch(e){
+    console.warn('Upload failed:',e);
+    PH[slot]='pending_upload';
+  }
+
+  slotEl.classList.add('filled');
+  hideE('em-photo');
+  buildSummary();
 }
 
-function loadExtra(input){
+async function loadExtra(input){
   PH.extra=[];
   const strip=$('extra-strip');strip.innerHTML='';
-  Array.from(input.files).slice(0,4).forEach((f,i)=>{
-    const r=new FileReader();
-    r.onload=e=>{
-      PH.extra.push(e.target.result);
+  const files=Array.from(input.files).slice(0,4);
+
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    // Show preview
+    const reader=new FileReader();
+    reader.onload=e=>{
       const w=document.createElement('div');w.className='extra-item';
       const img=document.createElement('img');img.src=e.target.result;img.alt='foto '+(i+1);
       const lbl=document.createElement('div');lbl.className='extra-lbl';lbl.textContent='Foto '+(i+1);
       w.appendChild(img);w.appendChild(lbl);strip.appendChild(w);
     };
-    r.readAsDataURL(f);
-  });
+    reader.readAsDataURL(f);
+
+    // Upload to Supabase Storage
+    try {
+      const ext=f.name.split('.').pop()||'jpg';
+      const path=`extra_${Date.now()}_${i}.${ext}`;
+      const res=await fetch(
+        SUPA_URL+'/storage/v1/object/foto-asset/extra/'+path,
+        {
+          method:'POST',
+          headers:{
+            'apikey':SUPA_KEY,
+            'Authorization':'Bearer '+SUPA_KEY,
+            'Content-Type':f.type||'image/jpeg',
+            'x-upsert':'true'
+          },
+          body:f
+        }
+      );
+      if(res.ok){
+        const url=SUPA_URL+'/storage/v1/object/public/foto-asset/extra/'+path;
+        PH.extra.push(url);
+      } else {
+        PH.extra.push('pending_upload');
+      }
+    } catch(e){
+      PH.extra.push('pending_upload');
+    }
+  }
 }
 
 /* ── Summary ── */
@@ -839,9 +906,9 @@ async function submit(){
       gpsStatus:GPS.status,
       fp:FP,
       photoCount:total,
-      fotoImei: PH.imei ? 'uploaded' : null,
-      fotoSN: PH.sn ? 'uploaded' : null,
-      fotoExtra: PH.extra.length > 0 ? PH.extra.length + ' foto' : null
+      fotoImei: PH.imei||null,
+      fotoSN: PH.sn||null,
+      fotoExtra: PH.extra.length>0 ? PH.extra.join(',') : null
     };
     // Kirim ke Supabase
     try {
