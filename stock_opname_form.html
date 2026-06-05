@@ -763,10 +763,10 @@ function buildSummary(){
 }
 
 /* ── Submit ── */
-function submit(){
+async function submit(){
   if(!PH.imei||!PH.sn){showE('em-photo',true);$('slot-imei').scrollIntoView({behavior:'smooth',block:'center'});return;}
   const btn=$('btn-kirim');btn.disabled=true;btn.innerHTML='<span class="sp"></span> Mengirim...';
-  setTimeout(()=>{
+  try{
     const rptId='RPT-MTI-'+Date.now().toString().slice(-6);
     const total=[PH.imei,PH.sn,...PH.extra].filter(Boolean).length;
     const gpsStr=GPS.status==='ok'?GPS.lat.toFixed(5)+', '+GPS.lng.toFixed(5):'⚠ Tidak tersedia — perlu verifikasi manual';
@@ -873,7 +873,7 @@ function submit(){
 }
 
 /* ── Init ── */
-(function init(){
+function init(){
   const raw=navigator.userAgent+(navigator.language||'')+(navigator.hardwareConcurrency||0)+(navigator.deviceMemory||0)+screen.width+'x'+screen.height+'x'+screen.colorDepth;
   let h=0;for(let i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}
   FP='FP'+Math.abs(h).toString(16).toUpperCase().padStart(8,'0');
@@ -882,7 +882,13 @@ function submit(){
   const conn=navigator.connection;
   $('net-v').textContent=conn?(conn.effectiveType||conn.type||'WiFi').toUpperCase():'Terdeteksi';
   gpsRender();
-})();
+}
+// Run after DOM ready
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
