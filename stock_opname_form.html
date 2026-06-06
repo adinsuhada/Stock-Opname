@@ -1186,6 +1186,8 @@ function init(){
     const netEl=$('net-v');
     if(netEl){netEl.textContent='Terdeteksi';netEl.className='fv ok';}
     gpsRender();
+    // Load struktur organisasi untuk dropdown cascading
+    loadOrgData();
   }
 }
 
