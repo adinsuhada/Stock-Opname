@@ -1142,7 +1142,7 @@ async function submit(){
 }
 
 /* ── Init ── */
-function init(){
+async function init(){
   try {
     // Generate fingerprint
     const raw = [
@@ -1187,7 +1187,7 @@ function init(){
     if(netEl){netEl.textContent='Terdeteksi';netEl.className='fv ok';}
     gpsRender();
     // Load struktur organisasi untuk dropdown cascading
-    loadOrgData();
+    await loadOrgData();
   }
 }
 
