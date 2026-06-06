@@ -586,13 +586,26 @@ let ORG_DATA=[];
 // Load struktur organisasi dari Supabase
 async function loadOrgData(){
   try {
+    // Try with publishable key format
     const res=await fetch(
       SUPA_URL+'/rest/v1/struktur_organisasi?select=divisi,sub_divisi,regional&aktif=eq.true&order=urutan,divisi,sub_divisi,regional',
-      {headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}}
+      {headers:{
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer '+SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }}
     );
+    console.log('Org API status:', res.status);
     if(res.ok){
-      ORG_DATA=await res.json();
+      const data=await res.json();
+      console.log('Org data loaded:', data.length, 'rows');
+      ORG_DATA=data;
       populateDivisi();
+      return;
+    } else {
+      const errText=await res.text();
+      console.warn('Org API error:', res.status, errText);
     }
   } catch(e){
     console.warn('loadOrgData error:',e);
